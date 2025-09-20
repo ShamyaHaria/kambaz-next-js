@@ -53,13 +53,13 @@ export default function Lab1() {
                 <ul id="wd-my-books">
                     <li>Dune</li>
                     <li>Lord of the Rings</li>
-                    <li>Ender's Game</li>
+                    <li>The Stolen Heir</li>
                     <li>Red Mars</li>
                     <li>The Forever War</li>
                 </ul>
                 Your favorite books (in no particular order)
                 <ul id="wd-your-books">
-                    <li>The Hitchhiker's Guide to the Galaxy</li>
+                    <li>The Hitchhikers Guide to the Galaxy</li>
                     <li>Foundation</li>
                     <li>Neuromancer</li>
                     <li>Snow Crash</li>
@@ -120,25 +120,6 @@ export default function Lab1() {
                     alt="Tesla Bot"
                     height="200px"
                 />
-            </div>
-            <div id="wd-forms">
-                <h4>Form Elements</h4>
-                <form id="wd-text-fields">
-                    <h5>Text Fields</h5>
-                    <label htmlFor="wd-text-fields-username">Username:</label>
-                    <input placeholder="jdoe" id="wd-text-fields-username" /> <br />
-                    <label htmlFor="wd-text-fields-password">Password:</label>
-                    <input type="password" value="123@#$asd" id="wd-text-fields-password" />
-                    <br />
-                    <label htmlFor="wd-text-fields-first-name">First name:</label>
-                    <input type="text" title="John" id="wd-text-fields-first-name" /> <br />
-                    <label htmlFor="wd-text-fields-last-name">Last name:</label>
-                    <input type="text" placeholder="Doe"
-                        value="Wonderland"
-                        title="The last name"
-                        id="wd-text-fields-last-name" />
-                    {/* copy rest of form elements here  */}
-                </form>
             </div>
 
             <div id="wd-forms">
