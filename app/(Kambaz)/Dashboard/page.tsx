@@ -8,18 +8,64 @@ export default function Dashboard() {
             <div id="wd-dashboard-courses">
                 <div className="wd-dashboard-course">
                     <Link href="/Courses/1234" className="wd-dashboard-course-link">
-                        <Image src="/images/reactjs.jpg" width={200} height={150} alt="ReactJS logo" />
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
                         <div>
-                            <h5> CS1234 React JS </h5>
-                            <p className="wd-dashboard-course-title">
-                                Full Stack software developer{" "}
-                            </p>
-                            <button> Go </button>
+                            <h5>CS1234 React JS</h5>
+                            <p className="wd-dashboard-course-title">Full Stack Software Developer</p>
+                            <button>Go</button>
                         </div>
                     </Link>
                 </div>
-                <div className="wd-dashboard-course"> ... </div>
-                <div className="wd-dashboard-course"> ... </div>
+                <div className="wd-dashboard-course">
+                    <Link href="/Courses/2345" className="wd-dashboard-course-link">
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
+                        <div>
+                            <h5>CS2345 React Advanced</h5>
+                            <p className="wd-dashboard-course-title">Advanced React Concepts</p>
+                            <button>Go</button>
+                        </div>
+                    </Link>
+                </div>
+                <div className="wd-dashboard-course">
+                    <Link href="/Courses/3456" className="wd-dashboard-course-link">
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
+                        <div>
+                            <h5>CS3456 React Hooks</h5>
+                            <p className="wd-dashboard-course-title">Using Hooks Efficiently</p>
+                            <button>Go</button>
+                        </div>
+                    </Link>
+                </div>
+                <div className="wd-dashboard-course">
+                    <Link href="/Courses/4567" className="wd-dashboard-course-link">
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
+                        <div>
+                            <h5>CS4567 React State Management</h5>
+                            <p className="wd-dashboard-course-title">State & Effect Management</p>
+                            <button>Go</button>
+                        </div>
+                    </Link>
+                </div>
+                <div className="wd-dashboard-course">
+                    <Link href="/Courses/5678" className="wd-dashboard-course-link">
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
+                        <div>
+                            <h5>CS5678 React Performance</h5>
+                            <p className="wd-dashboard-course-title">Optimizing React Apps</p>
+                            <button>Go</button>
+                        </div>
+                    </Link>
+                </div>
+                <div className="wd-dashboard-course">
+                    <Link href="/Courses/6789" className="wd-dashboard-course-link">
+                        <Image src="/images/reactjs.png" width={200} height={150} alt="ReactJS logo" />
+                        <div>
+                            <h5>CS6789 React Testing</h5>
+                            <p className="wd-dashboard-course-title">Testing Strategies</p>
+                            <button>Go</button>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </div>
     );

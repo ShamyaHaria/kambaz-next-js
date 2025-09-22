@@ -2,6 +2,7 @@
 export default function Lab1() {
     return (
         <div id="wd-lab1">
+            <h1>Shamya Haria (CS5610 18616 Web Development SEC 04 Fall 2025)</h1>
             <h2>Lab 1</h2>
             <h3>HTML Examples</h3>
             <div id="wd-h-tag">
@@ -80,29 +81,65 @@ export default function Lab1() {
                     <tbody>
                         <tr>
                             <td>Q1</td>
-                            <td>HTML</td>
-                            <td>2/3/21</td>
-                            <td>85</td>
+                            <td>HTML & UI Basics</td>
+                            <td>2025-09-29</td>
+                            <td>/29</td>
                         </tr>
                         <tr>
                             <td>Q2</td>
-                            <td>CSS</td>
-                            <td>2/10/21</td>
-                            <td>90</td>
+                            <td>HTML Prototyping</td>
+                            <td>2025-10-06</td>
+                            <td>/23</td>
                         </tr>
                         <tr>
                             <td>Q3</td>
-                            <td>JavaScript</td>
-                            <td>2/17/21</td>
-                            <td>95</td>
+                            <td>CSS & Bootstrap</td>
+                            <td>2025-10-13</td>
+                            <td>/32</td>
+                        </tr>
+                        <tr>
+                            <td>Q4</td>
+                            <td>Data Driven App</td>
+                            <td>2025-10-20</td>
+                            <td>/17</td>
+                        </tr>
+                        <tr>
+                            <td>Q5</td>
+                            <td>React SPA</td>
+                            <td>2025-10-27</td>
+                            <td>/31</td>
+                        </tr>
+                        <tr>
+                            <td>Q6</td>
+                            <td>Maintaining State</td>
+                            <td>2025-11-10</td>
+                            <td>/18</td>
+                        </tr>
+                        <tr>
+                            <td>Q7</td>
+                            <td>User Interface State</td>
+                            <td>2025-11-17</td>
+                            <td>/20</td>
+                        </tr>
+                        <tr>
+                            <td>Q8</td>
+                            <td>RESTful APIs & Express</td>
+                            <td>2025-11-24</td>
+                            <td>/25</td>
+                        </tr>
+                        <tr>
+                            <td>Q9</td>
+                            <td>Node.js HTTP Server</td>
+                            <td>2025-12-01</td>
+                            <td>/38</td>
+                        </tr>
+                        <tr>
+                            <td>Q10</td>
+                            <td>MongoDB & Database</td>
+                            <td>2025-12-08</td>
+                            <td>/20</td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={3}>Average</td>
-                            <td>90</td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
             <div id="wd-images">
@@ -223,7 +260,7 @@ export default function Lab1() {
                 </form>
                 <h4>Anchor tag</h4>
                 Please <a href="https://www.lipsum.com" id="wd-lipsum"> click here </a> to get dummy text<br />
-                
+
             </div>
         </div>
     );
