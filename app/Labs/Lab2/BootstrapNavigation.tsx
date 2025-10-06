@@ -28,7 +28,7 @@ export default function BootstrapNavigation() {
                     Cards
                 </h2>
                 <Card style={{ width: "18rem" }}>
-                    <Card.Img variant="top" src="images/stacked.jpg" alt="Stacked Starship rocket" />
+                    <Card.Img variant="top" src="/images/stacked.jpg" alt="Stacked Starship rocket" />
                     <Card.Body>
                         <Card.Title>Stacking Starship</Card.Title>
                         <Card.Text>
