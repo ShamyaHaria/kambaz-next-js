@@ -1,4 +1,5 @@
 'use client';
+
 import React from "react";
 import { Form, InputGroup, Row, Col, Button } from "react-bootstrap";
 
@@ -18,8 +19,8 @@ export default function BootstrapForms() {
             </div>
             <div id="wd-css-styling-dropdowns">
                 <h3>Dropdowns</h3>
-                <Form.Select>
-                    <option selected>Open this select menu</option>
+                <Form.Select defaultValue="">
+                    <option value="">Open this select menu</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
                     <option value="3">Three</option>
@@ -27,10 +28,10 @@ export default function BootstrapForms() {
             </div>
             <div id="wd-css-styling-switches">
                 <h3>Switches</h3>
-                <Form.Check type="switch" checked={false} label="Unchecked switch checkbox input" />
-                <Form.Check type="switch" checked={true} label="Checked switch checkbox input" />
-                <Form.Check type="switch" checked={false} label="Unchecked disabled switch checkbox input" disabled />
-                <Form.Check type="switch" checked={true} label="Checked disabled switch checkbox input" disabled />
+                <Form.Check type="switch" defaultChecked={false} label="Unchecked switch checkbox input" />
+                <Form.Check type="switch" defaultChecked={true} label="Checked switch checkbox input" />
+                <Form.Check type="switch" defaultChecked={false} label="Unchecked disabled switch checkbox input" disabled />
+                <Form.Check type="switch" defaultChecked={true} label="Checked disabled switch checkbox input" disabled />
             </div>
             <div id="wd-css-styling-range-and-sliders">
                 <h3>Range</h3>
@@ -57,7 +58,7 @@ export default function BootstrapForms() {
                 <Form.Group as={Row} className="mb-3" controlId="email1">
                     <Form.Label column sm={2}> Email </Form.Label>
                     <Col sm={10}>
-                        <Form.Control type="email" value="email@example.com" />
+                        <Form.Control type="email" defaultValue="email@example.com" />
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-3" controlId="password1">
@@ -92,7 +93,7 @@ export default function BootstrapForms() {
                         <Form.Group as={Row} className="mb-3">
                             <Form.Label as="legend" column sm={2}> Radios </Form.Label>
                             <Col sm={10}>
-                                <Form.Check type="radio" label="first radio" name="formHorizontalRadios" checked />
+                                <Form.Check type="radio" label="first radio" name="formHorizontalRadios" defaultChecked />
                                 <Form.Check type="radio" label="second radio" name="formHorizontalRadios" />
                                 <Form.Check type="radio" label="third radio" name="formHorizontalRadios" />
                             </Col>

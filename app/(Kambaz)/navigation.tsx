@@ -6,6 +6,7 @@ import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { FaBookBookmark } from "react-icons/fa6";
 import { SiAndroidstudio } from "react-icons/si";
 import { IoMdHelpCircle } from "react-icons/io";
+import { GiMaterialsScience } from "react-icons/gi";
 import Link from "next/link";
 
 export default function KambazNavigation() {
@@ -70,6 +71,13 @@ export default function KambazNavigation() {
                     <IoMdHelpCircle className="fs-1 text-white" />
                     <br />
                     Help
+                </Link>
+            </ListGroupItem>
+            <ListGroupItem className="border-0 bg-black text-center">
+                <Link href="/Labs" id="wd-labs-link" className="text-white text-decoration-none">
+                    <GiMaterialsScience className="fs-1 text-white" />
+                    <br />
+                    Labs
                 </Link>
             </ListGroupItem>
         </ListGroup>

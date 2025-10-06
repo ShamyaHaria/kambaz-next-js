@@ -1,5 +1,7 @@
+'use client';
+
 import React from "react";
-import { Button, Card, Nav, NavItem, NavLink } from "react-bootstrap";
+import { Button, Card, Nav } from "react-bootstrap";
 
 export default function BootstrapNavigation() {
     return (
@@ -7,18 +9,18 @@ export default function BootstrapNavigation() {
             <div id="wd-css-navigating-with-tabs">
                 <h2>Tabs</h2>
                 <Nav variant="tabs">
-                    <NavItem>
-                        <NavLink href="#/Labs/Lab2/Active">Active</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#/Labs/Lab2/Link1">Link 1</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#/Labs/Lab2/Link2">Link 2</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#/Labs/Lab2/Disabled" disabled>Disabled</NavLink>
-                    </NavItem>
+                    <Nav.Item>
+                        <Nav.Link href="#/Labs/Lab2/Active">Active</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#/Labs/Lab2/Link1">Link 1</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#/Labs/Lab2/Link2">Link 2</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#/Labs/Lab2/Disabled" disabled>Disabled</Nav.Link>
+                    </Nav.Item>
                 </Nav>
             </div>
             <div id="wd-css-navigating-with-cards">
@@ -26,7 +28,7 @@ export default function BootstrapNavigation() {
                     Cards
                 </h2>
                 <Card style={{ width: "18rem" }}>
-                    <Card.Img variant="top" src="images/stacked.jpg" />
+                    <Card.Img variant="top" src="images/stacked.jpg" alt="Stacked Starship rocket" />
                     <Card.Body>
                         <Card.Title>Stacking Starship</Card.Title>
                         <Card.Text>
