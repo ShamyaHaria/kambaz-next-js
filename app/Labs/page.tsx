@@ -20,8 +20,8 @@ export default function Labs() {
             </ul>
             <h2>Resources</h2>
             <ul>
-                <li><a href="https://github.com/ShamyaHaria/kambaz-next-js" target="_blank">Source Code Repository</a></li>
-                <li><a href="https://kambaz-next-js-seven-iota.vercel.app" target="_blank">Deployed Kambaz App (Vercel)</a></li>
+                <li><a id="wd-github" href="https://github.com/ShamyaHaria/kambaz-next-js" target="_blank">Source Code Repository</a></li>
+                <li><a id="wd-vercel" href="https://kambaz-next-js-seven-iota.vercel.app" target="_blank">Deployed Kambaz App (Vercel)</a></li>
             </ul>
         </div>
     );
