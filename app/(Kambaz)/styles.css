@@ -43,3 +43,25 @@ body * { font-family:
 .wd-lesson {
   border-left: 3px solid green !important;
 }
+
+.wd-search-bar {
+  width: 300px;
+}
+
+.wd-assignments-container {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+.wd-assignments-header {
+  background-color: #f0f0f0;
+}
+
+.wd-assignment-list-item {
+  border-left: 4px solid green !important;
+}
+
+.wd-assignment-info {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
