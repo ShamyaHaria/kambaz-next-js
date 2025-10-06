@@ -1,64 +1,138 @@
+'use client';
+
+import { Button, Form, Row, Col } from "react-bootstrap";
+import { BsCalendar3 } from "react-icons/bs";
+
 export default function AssignmentEditor() {
     return (
-        <div id="wd-assignments-editor">
-            <label htmlFor="wd-name">Assignment Name</label><br />
-            <input id="wd-name" value="A1 - ENV + HTML" /><br /><br />
+        <div id="wd-assignments-editor" className="p-4">
+            <Form>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
+                    <Form.Control id="wd-name" defaultValue="A1" />
+                </Form.Group>
 
-            <label htmlFor="wd-description">Description</label><br />
-            <textarea
-                id="wd-description"
-                rows={7}
-                defaultValue={`The assignment is available online Submit a link to the landing page of your Web application running on Vercel. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kambaz application Links to all relevant source code repositories The Kambaz application should include a link to navigate back to the landing page.`}
-            />
-            <br /><br />
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="wd-description">Description</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        id="wd-description"
+                        rows={8}
+                        defaultValue="The assignment is available online&#10;&#10;Submit a link to the landing page of your Web application running on Netlify.&#10;&#10;The landing page should include the following:&#10;• Your full name and section&#10;• Links to each of the lab assignments&#10;• Link to the Kanbas application&#10;• Links to all relevant source code repositories&#10;&#10;The Kanbas application should include a link to navigate back to the landing page."
+                    />
+                </Form.Group>
 
-            <label htmlFor="wd-points">Points</label><br />
-            <input id="wd-points" value={100} /><br /><br />
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label htmlFor="wd-points">Points</Form.Label>
+                        <Form.Control id="wd-points" type="number" defaultValue={100} />
+                    </Form.Group>
+                </Row>
 
-            <label htmlFor="wd-group">Assignment Group</label><br />
-            <select id="wd-group" defaultValue="ASSIGNMENT">
-                <option value="ASSIGNMENT">ASSIGNMENT</option>
-                <option value="EXAM">EXAM</option>
-                <option value="PROJECT">PROJECT</option>
-                <option value="PRACTICE">PRACTICE</option>
-                <option value="LAB">LAB</option>
-            </select><br /><br />
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label htmlFor="wd-group">Assignment Group</Form.Label>
+                        <Form.Select id="wd-group" defaultValue="ASSIGNMENTS">
+                            <option value="ASSIGNMENTS">ASSIGNMENTS</option>
+                            <option value="EXAMS">EXAMS</option>
+                            <option value="PROJECTS">PROJECTS</option>
+                        </Form.Select>
+                    </Form.Group>
+                </Row>
 
-            <label htmlFor="wd-grade-display">Display Grade as</label><br />
-            <select id="wd-grade-display" defaultValue="Percentage">
-                <option value="Percentage">Percentage</option>
-                <option value="Pass/Fail">Pass/Fail</option>
-                <option value="Not Graded">Not Graded</option>
-            </select><br /><br />
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label htmlFor="wd-display-grade-as">Display Grade as</Form.Label>
+                        <Form.Select id="wd-display-grade-as" defaultValue="Percentage">
+                            <option value="Percentage">Percentage</option>
+                            <option value="Points">Points</option>
+                        </Form.Select>
+                    </Form.Group>
+                </Row>
 
-            <label htmlFor="wd-submission-type">Submission Type</label><br />
-            <select id="wd-submission-type" defaultValue="Online">
-                <option value="Online">Online</option>
-                <option value="Online">In-Person</option>
-            </select><br /><br />
+                <div className="border rounded p-3 mb-3">
+                    <Row className="mb-3">
+                        <Form.Group as={Col}>
+                            <Form.Label htmlFor="wd-submission-type">Submission Type</Form.Label>
+                            <Form.Select id="wd-submission-type" defaultValue="Online">
+                                <option value="Online">Online</option>
+                                <option value="In-Person">In-Person</option>
+                                <option value="Paper">Paper</option>
+                                <option value="External Tool">External Tool</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Row>
 
-            <div>
-                <label>Online Entry Options</label><br />
-                <input type="checkbox" id="wd-entry-text" /> <label htmlFor="wd-entry-text">Text Entry</label><br />
-                <input type="checkbox" id="wd-entry-url" /> <label htmlFor="wd-entry-url">Website URL</label><br />
-                <input type="checkbox" id="wd-entry-media" /> <label htmlFor="wd-entry-media">Media Recordings</label><br />
-                <input type="checkbox" id="wd-entry-annotation" /> <label htmlFor="wd-entry-annotation">Student Annotation</label><br />
-                <input type="checkbox" id="wd-entry-upload" /> <label htmlFor="wd-entry-upload">File Uploads</label><br />
-            </div><br />
+                    <div className="border rounded p-3">
+                        <Form.Label className="fw-bold">Online Entry Options</Form.Label>
+                        <Form.Check type="checkbox" id="wd-text-entry" label="Text Entry" />
+                        <Form.Check type="checkbox" id="wd-website-url" label="Website URL" defaultChecked />
+                        <Form.Check type="checkbox" id="wd-media-recordings" label="Media Recordings" />
+                        <Form.Check type="checkbox" id="wd-student-annotation" label="Student Annotation" />
+                        <Form.Check type="checkbox" id="wd-file-upload" label="File Uploads" />
+                    </div>
+                </div>
 
-            <label htmlFor="wd-assign-to">Assign Assign to</label><br />
-            <input id="wd-assign-to" value="Everyone" /><br /><br />
+                <div className="border rounded p-3 mb-3">
+                    <Form.Label className="fw-bold">Assign</Form.Label>
+                    
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="wd-assign-to">Assign to</Form.Label>
+                        <Form.Control id="wd-assign-to" defaultValue="Everyone" />
+                    </Form.Group>
 
-            <label htmlFor="wd-due">Due</label><br />
-            <input id="wd-due" type="date" defaultValue="2024-05-13" /><br />
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="wd-due-date">Due</Form.Label>
+                        <div className="position-relative">
+                            <Form.Control 
+                                id="wd-due-date" 
+                                type="datetime-local" 
+                                defaultValue="2024-05-13T23:59" 
+                            />
+                            <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
+                                style={{ pointerEvents: 'none' }} />
+                        </div>
+                    </Form.Group>
 
-            <label htmlFor="wd-available-from">Available from</label>
-            <input id="wd-available-from" type="date" defaultValue="2024-05-06" />
-            <label htmlFor="wd-available-until">Until</label>
-            <input id="wd-available-until" type="date" defaultValue="2024-05-20" /><br /><br />
+                    <Row>
+                        <Col md={6}>
+                            <Form.Group className="mb-3">
+                                <Form.Label htmlFor="wd-available-from">Available from</Form.Label>
+                                <div className="position-relative">
+                                    <Form.Control 
+                                        id="wd-available-from" 
+                                        type="datetime-local" 
+                                        defaultValue="2024-05-06T12:00" 
+                                    />
+                                    <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
+                                        style={{ pointerEvents: 'none' }} />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group className="mb-3">
+                                <Form.Label htmlFor="wd-available-until">Until</Form.Label>
+                                <div className="position-relative">
+                                    <Form.Control 
+                                        id="wd-available-until" 
+                                        type="datetime-local" 
+                                        defaultValue="2024-05-20T23:59" 
+                                    />
+                                    <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
+                                        style={{ pointerEvents: 'none' }} />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </div>
 
-            <button type="button">Cancel</button>
-            <button type="button">Save</button>
+                <hr />
+
+                <div className="d-flex justify-content-end gap-2">
+                    <Button variant="secondary">Cancel</Button>
+                    <Button variant="danger">Save</Button>
+                </div>
+            </Form>
         </div>
     );
 }

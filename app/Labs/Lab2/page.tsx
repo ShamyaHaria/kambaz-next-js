@@ -23,6 +23,7 @@ import BootstrapNavigation from "./BootstrapNavigation";
 export default function Lab2() {
   return (
     <Container id="wd-lab2">
+      <h2>Shamya Haria (CS5610 18616 Web Development SEC 04 Fall 2025)</h2>
       <h2>Lab 2 - Cascading Style Sheets</h2>
       <h3>Styling with the STYLE attribute</h3>
       <div id="wd-css-id-selectors">

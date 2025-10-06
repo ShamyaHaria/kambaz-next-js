@@ -65,3 +65,34 @@ body * { font-family:
   font-size: 0.875rem;
   color: #6c757d;
 }
+
+.wd-account-form {
+  max-width: 400px;
+}
+
+.wd-account-form h3 {
+  margin-bottom: 20px;
+}
+
+/* Account Navigation */
+.wd-account-nav {
+  width: 200px;
+  padding: 20px;
+}
+
+.wd-account-nav-link {
+  display: block;
+  padding: 10px 0;
+  padding-left: 15px;
+  text-decoration: none;
+  color: #dc3545;
+  font-size: 16px;
+}
+
+.wd-account-nav-link:hover {
+  color: #b02a37;
+}
+
+.wd-signin-active {
+  border-left: 3px solid #000;
+}

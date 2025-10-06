@@ -1,11 +1,34 @@
 'use client';
 
+import Link from "next/dist/client/link";
 import React from "react";
 import { Button, Card, Nav } from "react-bootstrap";
 
 export default function BootstrapNavigation() {
     return (
         <>
+            <div id="wd-css-navigating-with-pills" className="mb-4">
+                <h2>Pills</h2>
+                <Nav variant="pills">
+                    <Nav.Item>
+                        <Nav.Link as={Link} href="/Labs">Labs</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link as={Link} href="/Labs/Lab1">Lab 1</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link as={Link} href="/Labs/Lab2">Lab 2</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link as={Link} href="/">Kambaz</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="https://github.com/ShamyaHaria/kambaz-next-js" target="_blank">
+                            GitHub Repository
+                        </Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </div>
             <div id="wd-css-navigating-with-tabs">
                 <h2>Tabs</h2>
                 <Nav variant="tabs">

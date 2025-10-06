@@ -1,10 +1,17 @@
 import Link from "next/link";
+
 export default function AccountNavigation() {
     return (
-        <div>
-            <Link href="Signin"> Signin </Link> <br />
-            <Link href="Signup"> Signup </Link> <br />
-            <Link href="Profile"> Profile </Link> <br />
+        <div className="wd-account-nav">
+            <Link href="/Account/Signin" className="wd-account-nav-link wd-signin-active">
+                Signin
+            </Link>
+            <Link href="/Account/Signup" className="wd-account-nav-link">
+                Signup
+            </Link>
+            <Link href="/Account/Profile" className="wd-account-nav-link">
+                Profile
+            </Link>
         </div>
     );
 }
