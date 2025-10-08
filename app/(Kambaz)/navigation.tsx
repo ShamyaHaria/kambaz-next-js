@@ -1,11 +1,12 @@
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
-import { FaHistory } from "react-icons/fa";
-import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import { GoHistory } from "react-icons/go";
+import { FaRegCircleUser } from "react-icons/fa6";
+import { GoInbox } from "react-icons/go";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
-import { FaBookBookmark } from "react-icons/fa6";
-import { SiAndroidstudio } from "react-icons/si";
-import { IoMdHelpCircle } from "react-icons/io";
+import { LuBookText } from "react-icons/lu";
+import { SiObsstudio } from "react-icons/si";
+import { MdHelpOutline } from "react-icons/md";
 import { GiMaterialsScience } from "react-icons/gi";
 import Link from "next/link";
 
@@ -33,7 +34,7 @@ export default function KambazNavigation() {
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center">
                 <Link href="/Courses" id="wd-courses-link" className="text-white text-decoration-none">
-                    <FaBookBookmark className="fs-3 text-danger" />
+                    <LuBookText className="fs-3 text-danger" />
                     <br />
                     Courses
                 </Link>
@@ -47,28 +48,28 @@ export default function KambazNavigation() {
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center">
                 <Link href="/Inbox" id="wd-inbox-link" className="text-white text-decoration-none">
-                    <FaInbox className="fs-3 text-danger" />
+                    <GoInbox className="fs-3 text-danger" />
                     <br />
                     Inbox
                 </Link>
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center">
                 <Link href="/History" id="wd-history-link" className="text-white text-decoration-none">
-                    <FaHistory className="fs-3 text-danger" />
+                    <GoHistory className="fs-3 text-danger" />
                     <br />
                     History
                 </Link>
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center">
                 <Link href="/Studio" id="wd-studio-link" className="text-white text-decoration-none">
-                    <SiAndroidstudio className="fs-3 text-danger" />
+                    <SiObsstudio className="fs-3 text-danger" />
                     <br />
                     Studio
                 </Link>
             </ListGroupItem>
             <ListGroupItem className="border-0 bg-black text-center">
                 <Link href="/Help" id="wd-help-link" className="text-white text-decoration-none">
-                    <IoMdHelpCircle className="fs-3 text-danger" />
+                    <MdHelpOutline className="fs-3 text-danger" />
                     <br />
                     Help
                 </Link>

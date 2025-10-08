@@ -1,15 +1,31 @@
-body { margin: 0; padding: 0; }
-
-body * { font-family: Arial, Helvetica, sans-serif; }
-
-@media (min-width: 768px) {
-  #wd-kambaz .wd-main-content-offset { padding-left: 140px !important; }
+body   {
+  margin: 0;
+  padding: 0;
 }
 
+body * {
+  font-family: Arial,
+  Helvetica, sans-serif;
+}
+
+@media (min-width: 768px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
 .list-group.wd > .list-group-item.active {
   color: black;
   background-color: white;
   border-left: 3px solid black !important;
+}
+body { margin: 0;  padding: 0; }
+body * { font-family:
+         Arial, Helvetica, 
+         sans-serif; }
+@media (min-width: 768px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
 }
 
 .btn-secondary {
@@ -18,32 +34,45 @@ body * { font-family: Arial, Helvetica, sans-serif; }
   --bs-btn-border-color: #c7cdd1 !important;
   --bs-btn-hover-color: #fff !important;
 }
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
 
-.bg-secondary { --bs-secondary-rgb: 199, 205, 209; }
-
-.list-group-item { --bs-list-group-border-color: gray; }
-
-.wd-lesson { border-left: 3px solid green !important; }
-
-.wd-search-bar { width: 300px; }
+.wd-search-bar {
+  width: 300px;
+}
 
 .wd-assignments-container {
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
 }
 
-.wd-assignments-header { background-color: #f0f0f0; }
+.wd-assignments-header {
+  background-color: #f0f0f0;
+}
 
-.wd-assignment-list-item { border-left: 4px solid green !important; }
+.wd-assignment-list-item {
+  border-left: 4px solid green !important;
+}
 
 .wd-assignment-info {
   font-size: 0.875rem;
   color: #6c757d;
 }
 
-.wd-account-form { max-width: 400px; }
+.wd-account-form {
+  max-width: 400px;
+}
 
-.wd-account-form h3 { margin-bottom: 20px; }
+.wd-account-form h3 {
+  margin-bottom: 20px;
+}
 
 .wd-account-nav {
   width: 200px;
@@ -59,6 +88,10 @@ body * { font-family: Arial, Helvetica, sans-serif; }
   font-size: 16px;
 }
 
-.wd-account-nav-link:hover { color: #b02a37; }
+.wd-account-nav-link:hover {
+  color: #b02a37;
+}
 
-.wd-signin-active { border-left: 3px solid #000; }
+.wd-signin-active {
+  border-left: 3px solid #000;
+}
