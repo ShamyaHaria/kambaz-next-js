@@ -1,0 +1,75 @@
+.wd-piazza-header {
+  background-color: rgba(255, 0, 0, 0.765);
+  padding: 20px;
+  text-align: center;
+}
+
+.wd-piazza-header h1 {
+  color: white;
+  margin: 0;
+}
+
+.wd-piazza-content {
+  padding: 30px;
+}
+
+.wd-piazza-section {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 25px;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+}
+
+.wd-piazza-footer {
+  background-color: rgba(255, 0, 0, 0.765);
+  padding: 30px;
+  color: white;
+}
+
+.wd-piazza-footer h5 {
+  margin-bottom: 15px;
+}
+
+.wd-piazza-footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wd-piazza-footer li {
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.wd-piazza-footer li:hover {
+  text-decoration: underline;
+}
+
+.wd-piazza-sidebar {
+  width: 350px;
+  border-right: 1px solid #dee2e6;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.wd-piazza-filters div {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.wd-piazza-filters div:hover {
+  background-color: #f8f9fa;
+}
+
+.wd-post-item {
+  padding: 10px;
+  border-left: 3px solid #0066cc;
+  background-color: #f8f9fa;
+  margin-bottom: 10px;
+}
+
+.wd-piazza-banner {
+  padding: 10px 20px;
+}
