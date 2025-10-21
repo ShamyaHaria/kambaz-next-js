@@ -2,14 +2,19 @@
 
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { BsCalendar3 } from "react-icons/bs";
+import * as db from '../../../../Database';
+import { useParams } from "next/dist/client/components/navigation";
 
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignment = db.assignments.find((a: any) => a._id === aid);
+
     return (
         <div id="wd-assignments-editor" className="p-4">
             <Form>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
-                    <Form.Control id="wd-name" defaultValue="A1" />
+                    <Form.Control id="wd-name" defaultValue={assignment ? assignment.title : "A1"} />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -18,14 +23,14 @@ export default function AssignmentEditor() {
                         as="textarea"
                         id="wd-description"
                         rows={8}
-                        defaultValue="The assignment is available online&#10;&#10;Submit a link to the landing page of your Web application running on Netlify.&#10;&#10;The landing page should include the following:&#10;• Your full name and section&#10;• Links to each of the lab assignments&#10;• Link to the Kanbas application&#10;• Links to all relevant source code repositories&#10;&#10;The Kanbas application should include a link to navigate back to the landing page."
+                        defaultValue={assignment ? assignment.description : "The assignment is available online&#10;&#10;Submit a link to the landing page of your Web application running on Netlify.&#10;&#10;The landing page should include the following:&#10;• Your full name and section&#10;• Links to each of the lab assignments&#10;• Link to the Kanbas application&#10;• Links to all relevant source code repositories&#10;&#10;The Kanbas application should include a link to navigate back to the landing page."}
                     />
                 </Form.Group>
 
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label htmlFor="wd-points">Points</Form.Label>
-                        <Form.Control id="wd-points" type="number" defaultValue={100} />
+                        <Form.Control id="wd-points" type="number" defaultValue={assignment ? assignment.points : 100} />
                     </Form.Group>
                 </Row>
 
@@ -87,10 +92,8 @@ export default function AssignmentEditor() {
                             <Form.Control 
                                 id="wd-due-date" 
                                 type="datetime-local" 
-                                defaultValue="2024-05-13T23:59" 
+                                defaultValue={assignment ? `2024-${assignment.dueDate.replace(' ', '-')}T23:59` : "2024-05-13T23:59"} 
                             />
-                            <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
-                                style={{ pointerEvents: 'none' }} />
                         </div>
                     </Form.Group>
 
@@ -102,7 +105,7 @@ export default function AssignmentEditor() {
                                     <Form.Control 
                                         id="wd-available-from" 
                                         type="datetime-local" 
-                                        defaultValue="2024-05-06T12:00" 
+                                        defaultValue={assignment ? `2024-${assignment.availableDate.replace(' ', '-')}T12:00` : "2024-05-06T12:00"} 
                                     />
                                     <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
                                         style={{ pointerEvents: 'none' }} />
@@ -116,10 +119,8 @@ export default function AssignmentEditor() {
                                     <Form.Control 
                                         id="wd-available-until" 
                                         type="datetime-local" 
-                                        defaultValue="2024-05-20T23:59" 
+                                        defaultValue={assignment ? `2024-${assignment.dueDate.replace(' ', '-')}T23:59` : "2024-05-20T23:59"} 
                                     />
-                                    <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
-                                        style={{ pointerEvents: 'none' }} />
                                 </div>
                             </Form.Group>
                         </Col>
