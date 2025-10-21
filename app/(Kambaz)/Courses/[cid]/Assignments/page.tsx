@@ -8,8 +8,12 @@ import { FaPlus } from 'react-icons/fa6';
 import { CiSearch } from 'react-icons/ci';
 import { FaCheckCircle } from 'react-icons/fa';
 import { Button, Form, InputGroup } from 'react-bootstrap';
+import * as db from '../../../Database';
+import { useParams } from 'next/dist/client/components/navigation';
 
 export default function Assignments() {
+    const { cid } = useParams();
+    const assignmentsList = db.assignments.filter((assignment: any) => assignment.course === cid);
     return (
         <div id="wd-assignments">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -47,50 +51,22 @@ export default function Assignments() {
                 </div>
 
                 <ul className="list-group list-group-flush" id="wd-assignment-list">
-                    <li className="wd-assignment-list-item list-group-item d-flex align-items-center">
-                        <BsGripVertical className="me-2 fs-3" />
-                        <MdOutlineAssignment className="me-3 fs-3 text-success" />
-                        <div className="flex-grow-1">
-                            <Link href="/Courses/1234/Assignments/123" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                                A1
-                            </Link>
-                            <div className="wd-assignment-info">
-                                <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 6 at 12:00am | <strong>Due</strong> May 13 at 11:59pm | 100 pts
+                    {assignmentsList.map((assignment: any) => (
+                        <li key={assignment._id} className="wd-assignment-list-item list-group-item d-flex align-items-center">
+                            <BsGripVertical className="me-2 fs-3" />
+                            <MdOutlineAssignment className="me-3 fs-3 text-success" />
+                            <div className="flex-grow-1">
+                                <Link href={`/Courses/${cid}/Assignments/${assignment._id}`} className="wd-assignment-link text-decoration-none text-dark fw-bold">
+                                    {assignment.title}
+                                </Link>
+                                <div className="wd-assignment-info">
+                                    <span className="text-danger">{assignment.description}</span> | <strong>Not available until</strong> {assignment.availableDate} at 12:00am | <strong>Due</strong> {assignment.dueDate} at 11:59pm | {assignment.points} pts
+                                </div>
                             </div>
-                        </div>
-                        <FaCheckCircle className="text-success me-2" />
-                        <IoEllipsisVertical />
-                    </li>
-
-                    <li className="wd-assignment-list-item list-group-item d-flex align-items-center">
-                        <BsGripVertical className="me-2 fs-3" />
-                        <MdOutlineAssignment className="me-3 fs-3 text-success" />
-                        <div className="flex-grow-1">
-                            <Link href="/Courses/1234/Assignments/124" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                                A2
-                            </Link>
-                            <div className="wd-assignment-info">
-                                <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 13 at 12:00am | <strong>Due</strong> May 20 at 11:59pm | 100 pts
-                            </div>
-                        </div>
-                        <FaCheckCircle className="text-success me-2" />
-                        <IoEllipsisVertical />
-                    </li>
-
-                    <li className="wd-assignment-list-item list-group-item d-flex align-items-center">
-                        <BsGripVertical className="me-2 fs-3" />
-                        <MdOutlineAssignment className="me-3 fs-3 text-success" />
-                        <div className="flex-grow-1">
-                            <Link href="/Courses/1234/Assignments/125" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                                A3
-                            </Link>
-                            <div className="wd-assignment-info">
-                                <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 20 at 12:00am | <strong>Due</strong> May 27 at 11:59pm | 100 pts
-                            </div>
-                        </div>
-                        <FaCheckCircle className="text-success me-2" />
-                        <IoEllipsisVertical />
-                    </li>
+                            <FaCheckCircle className="text-success me-2" />
+                            <IoEllipsisVertical />
+                        </li>
+                    ))}
                 </ul>
             </div>
         </div>
