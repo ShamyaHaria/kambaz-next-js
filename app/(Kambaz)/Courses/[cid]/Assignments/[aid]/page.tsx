@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { BsCalendar3 } from "react-icons/bs";
 import * as db from '../../../../Database';
 import { useParams } from "next/dist/client/components/navigation";
 
@@ -107,8 +106,6 @@ export default function AssignmentEditor() {
                                         type="datetime-local" 
                                         defaultValue={assignment ? `2024-${assignment.availableDate.replace(' ', '-')}T12:00` : "2024-05-06T12:00"} 
                                     />
-                                    <BsCalendar3 className="position-absolute top-50 end-0 translate-middle-y me-2 text-secondary" 
-                                        style={{ pointerEvents: 'none' }} />
                                 </div>
                             </Form.Group>
                         </Col>
