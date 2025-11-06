@@ -1,6 +1,13 @@
+'use client';
+
+import React from "react";
 import Link from "next/link";
+import store from "./store";
+import { Provider } from "react-redux";
+
 export default function Labs() {
     return (
+        <Provider store={store}>
         <div id="wd-labs">
             <h1>Shamya Haria (CS5610 18616 Web Development SEC 04 Fall 2025)</h1>
             <h1>Labs</h1>
@@ -28,5 +35,6 @@ export default function Labs() {
                 <li><a id="wd-vercel" href="https://kambaz-next-js-seven-iota.vercel.app" target="_blank">Deployed Kambaz App (Vercel)</a></li>
             </ul>
         </div>
+        </Provider>
     );
 }
