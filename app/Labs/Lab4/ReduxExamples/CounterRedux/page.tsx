@@ -1,9 +1,17 @@
 'use client';
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement } from "./counterReducer";
+
 export default function CounterRedux() {
-    const { count } = useSelector((state: any) => state.counterReducer);
+    let count = 0;
+    try {
+        const state = useSelector((state: any) => state.counterReducer);
+        count = state?.count || 0;
+    } catch (error) {
+        // Redux not available during build
+    }
     const dispatch = useDispatch();
+
     return (
         <div id="wd-counter-redux">
             <h2>Counter Redux</h2>

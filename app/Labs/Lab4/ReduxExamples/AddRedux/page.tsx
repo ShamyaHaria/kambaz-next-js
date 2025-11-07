@@ -7,7 +7,13 @@ import FormControl from "react-bootstrap/esm/FormControl";
 export default function AddRedux() {
   const [a, setA] = useState(12);
   const [b, setB] = useState(23);
-  const { sum } = useSelector((state: any) => state.addReducer);
+  let sum = 0;
+  try {
+    const state = useSelector((state: any) => state.addReducer);
+    sum = state?.sum || 0;
+  } catch (error) {
+    // Redux not available during build
+  }
   const dispatch = useDispatch();
   return (
     <div className="w-25" id="wd-add-redux">
@@ -18,10 +24,10 @@ export default function AddRedux() {
       <FormControl type="number" defaultValue={b}
         onChange={(e) => setB(parseInt(e.target.value))} />
       <Button id="wd-add-redux-click"
-              onClick={() => dispatch(add({ a, b }))}>
+        onClick={() => dispatch(add({ a, b }))}>
         Add Redux
       </Button>
-      <hr/>
+      <hr />
     </div>
   );
 }
