@@ -1,8 +1,9 @@
 "use client";
 
 import { useParams } from 'next/navigation';
+import { v4 as uuidv4 } from "uuid";
 import * as db from '../../../Database';;
-import React from 'react';
+import { useState } from 'react';
 import '../../../styles.css';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import ModulesControls from './ModulesControls';
@@ -11,10 +12,16 @@ import { BsGripVertical } from "react-icons/bs";
 
 export default function Modules() {
     const { cid } = useParams();
-    const modules = db.modules;
+    const [modules, setModules] = useState<any[]>(db.modules);
+    const [moduleName, setModuleName] = useState("");
+    const addModule = () => {
+        setModules([...modules, { _id: uuidv4(), name: moduleName, course: cid, lessons: [] }]);
+        setModuleName("");
+    };
     return (
         <div>
-            <ModulesControls /><br /><br /><br /><br />
+            <ModulesControls setModuleName={setModuleName}
+                moduleName={moduleName} addModule={addModule} /><br /><br /><br /><br />
             <ListGroup className="rounded-0" id="wd-modules">
                 {modules.filter((module: any) => module.course === cid).map((module: any) =>
                     <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
