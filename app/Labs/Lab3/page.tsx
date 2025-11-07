@@ -36,10 +36,16 @@ import Square from "./Square";
 import Highlight from "./Highlight";
 
 export default function Lab3() {
-  const { todos } = useSelector((state: any) => state.todosReducer);
+  let todos = [];
+  try {
+    const state = useSelector((state: any) => state.todosReducer);
+    todos = state?.todos || [];
+  } catch (error) {
+    todos = [];
+  }
   console.log("Hello World");
-  
-  return(
+
+  return (
     <div id="wd-lab3">
       <h3>Lab 3</h3>
       <ListGroup>
@@ -50,35 +56,35 @@ export default function Lab3() {
         ))}
       </ListGroup>
       <hr />
-      <VariablesAndConstants/>
-      <VariableTypes/>
-      <BooleanVariables/>
-      <IfElse/>
-      <TernaryOperator/>
-      <ConditionalOutputIfElse/>
-      <ConditionalOutputInline/>
-      <LegacyFunctions/>
-      <ArrowFunctions/>
-      <ImpliedReturn/>
-      <TemplateLiterals/>
-      <SimpleArrays/>
-      <ArrayIndexAndLength/>
-      <AddingAndRemovingToFromArrays/>
-      <ForLoops/>
-      <MapFunction/>
-      <FindFunction/>
-      <FindIndex/>
-      <FilterFunction/>
-      <JsonStringify/>
-      <House/>
-      <TodoItem/>
-      <TodoList/>
-      <Spreading/>
-      <Destructing/>
-      <FunctionDestructing/>
-      <DestructingImports/>
-      <Classes/>
-      <Add a={3} b={4}/>
+      <VariablesAndConstants />
+      <VariableTypes />
+      <BooleanVariables />
+      <IfElse />
+      <TernaryOperator />
+      <ConditionalOutputIfElse />
+      <ConditionalOutputInline />
+      <LegacyFunctions />
+      <ArrowFunctions />
+      <ImpliedReturn />
+      <TemplateLiterals />
+      <SimpleArrays />
+      <ArrayIndexAndLength />
+      <AddingAndRemovingToFromArrays />
+      <ForLoops />
+      <MapFunction />
+      <FindFunction />
+      <FindIndex />
+      <FilterFunction />
+      <JsonStringify />
+      <House />
+      <TodoItem />
+      <TodoList />
+      <Spreading />
+      <Destructing />
+      <FunctionDestructing />
+      <DestructingImports />
+      <Classes />
+      <Add a={3} b={4} />
       <h3>Square of 4</h3>
       <Square>4</Square>
       <hr />
