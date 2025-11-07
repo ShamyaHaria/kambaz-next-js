@@ -4,14 +4,16 @@ import { increment, decrement } from "./counterReducer";
 
 export default function CounterRedux() {
     let count = 0;
+    let dispatch: any = () => {};
+    
     try {
         const state = useSelector((state: any) => state.counterReducer);
         count = state?.count || 0;
+        dispatch = useDispatch();
     } catch (error) {
         // Redux not available during build
     }
-    const dispatch = useDispatch();
-
+    
     return (
         <div id="wd-counter-redux">
             <h2>Counter Redux</h2>
