@@ -1,16 +1,26 @@
+"use client";
+
 import { ReactNode } from "react";
+import { useSelector } from "react-redux";
+import { useParams, usePathname } from "next/navigation";
 import CourseNavigation from "./Navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { courses } from "../../Database";
-export default async function CoursesLayout(
-    { children, params }: Readonly<{ children: ReactNode; params: Promise<{ cid: string }> }>) {
-    const { cid } = await params;
-    const course = courses.find((course) => course._id === cid);
+
+export default function CoursesLayout({ children }: { children: ReactNode }) {
+    const { cid } = useParams();
+    const pathname = usePathname();
+    const { courses } = useSelector((state: any) => state.coursesReducer);
+    const course = courses.find((course: any) => course._id === cid);
+    
+    // Extract the current section from pathname
+    const paths = pathname.split("/");
+    const currentSection = paths[paths.length - 1];
+    
     return (
         <div id="wd-courses">
             <h2 className="text-danger">
                 <GiHamburgerMenu className="me-4 fs-4 mb-1" />
-                {course?.name}
+                {course?.name} &gt; {currentSection}
             </h2>
             <div className="d-flex">
                 <div className="d-none d-md-block">
@@ -18,7 +28,8 @@ export default async function CoursesLayout(
                 </div>
                 <div className="flex-fill">
                     {children}
-                </div></div>
+                </div>
+            </div>
         </div>
     );
 }
