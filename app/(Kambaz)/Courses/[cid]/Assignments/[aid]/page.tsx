@@ -24,7 +24,6 @@ export default function AssignmentEditor() {
     };
 
     const handleSave = () => {
-        // For now, just navigate back (changes are lost on refresh, but user can edit during session)
         router.push(`/Courses/${cid}/Assignments`);
     };
 
