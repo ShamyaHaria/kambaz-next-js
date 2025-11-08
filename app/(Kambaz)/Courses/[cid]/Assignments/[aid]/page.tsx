@@ -1,12 +1,22 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import * as db from '../../../../Database';
 import { useParams } from "next/dist/client/components/navigation";
 
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
+    const router = useRouter();
     const assignment = db.assignments.find((a: any) => a._id === aid);
+
+    const handleCancel = () => {
+        router.push(`/Courses/${cid}/Assignments`);
+    };
+
+    const handleSave = () => {
+        router.push(`/Courses/${cid}/Assignments`);
+    };
 
     return (
         <div id="wd-assignments-editor" className="p-4">
@@ -127,8 +137,8 @@ export default function AssignmentEditor() {
                 <hr />
 
                 <div className="d-flex justify-content-end gap-2">
-                    <Button variant="secondary">Cancel</Button>
-                    <Button variant="danger">Save</Button>
+                    <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
+                    <Button variant="danger" onClick={handleSave}>Save</Button>
                 </div>
             </Form>
         </div>
