@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import * as db from '../../../../Database';
@@ -8,13 +9,22 @@ import { useParams } from "next/dist/client/components/navigation";
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
     const router = useRouter();
-    const assignment = db.assignments.find((a: any) => a._id === aid);
+    const assignmentFromDb = db.assignments.find((a: any) => a._id === aid);
+    
+    const [assignment, setAssignment] = useState(assignmentFromDb || {
+        title: "A1",
+        description: "New Assignment",
+        points: 100,
+        dueDate: "May 13",
+        availableDate: "May 6"
+    });
 
     const handleCancel = () => {
         router.push(`/Courses/${cid}/Assignments`);
     };
 
     const handleSave = () => {
+        // For now, just navigate back (changes are lost on refresh, but user can edit during session)
         router.push(`/Courses/${cid}/Assignments`);
     };
 
@@ -23,7 +33,11 @@ export default function AssignmentEditor() {
             <Form>
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
-                    <Form.Control id="wd-name" defaultValue={assignment ? assignment.title : "A1"} />
+                    <Form.Control 
+                        id="wd-name" 
+                        value={assignment.title}
+                        onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}
+                    />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -32,14 +46,20 @@ export default function AssignmentEditor() {
                         as="textarea"
                         id="wd-description"
                         rows={8}
-                        defaultValue={assignment ? assignment.description : "The assignment is available online&#10;&#10;Submit a link to the landing page of your Web application running on Netlify.&#10;&#10;The landing page should include the following:&#10;• Your full name and section&#10;• Links to each of the lab assignments&#10;• Link to the Kanbas application&#10;• Links to all relevant source code repositories&#10;&#10;The Kanbas application should include a link to navigate back to the landing page."}
+                        value={assignment.description}
+                        onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
                     />
                 </Form.Group>
 
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label htmlFor="wd-points">Points</Form.Label>
-                        <Form.Control id="wd-points" type="number" defaultValue={assignment ? assignment.points : 100} />
+                        <Form.Control 
+                            id="wd-points" 
+                            type="number" 
+                            value={assignment.points}
+                            onChange={(e) => setAssignment({ ...assignment, points: parseInt(e.target.value) || 0 })}
+                        />
                     </Form.Group>
                 </Row>
 
