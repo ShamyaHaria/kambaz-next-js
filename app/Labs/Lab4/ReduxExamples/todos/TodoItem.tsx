@@ -6,22 +6,17 @@ export type Todo = {
     id: string; title: string
 };
 
-export default function TodoItem({
-    todo}: {
-        todo: Todo;
-        deleteTodo: (id: string) => void;
-        setTodo: (todo: Todo) => void;
-    }) {
+export default function TodoItem({ todo }: { todo: Todo }) {
     const dispatch = useDispatch();
     return (
-        <ListGroupItem key={todo.id}>
+        <ListGroupItem>
             <Button variant="danger"
                 onClick={() => dispatch(deleteTodo(todo.id))}
                 className="float-end">
                 Delete </Button>
             <Button variant="warning"
                 onClick={() => dispatch(setTodo(todo))}
-                className="float-end">
+                className="float-end me-2">
                 Edit </Button>
             <span className="fs-2">{todo.title}</span>
         </ListGroupItem>

@@ -20,7 +20,7 @@ export default function CourseNavigation() {
         <div className="rounded-0 border-0 wd list-group">
             {links.map(({ href, label }) => (
                 <Link key={href}
-                    className={`list-group-item ${pathname.endsWith(href) ?
+                    className={`list-group-item ${pathname.includes(href) ?
                             "active" : "text-danger border-0"}`}
                     href={`/Courses/${cid}/${href}`} >
                     {label} </Link>
