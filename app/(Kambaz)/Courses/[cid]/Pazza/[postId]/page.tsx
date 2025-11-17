@@ -1,3 +1,9 @@
+
+export default function PostDetailPage() {
+    return null;
+}
+
+
 // import Link from 'next/link';
 // import { notFound } from 'next/navigation';
 // interface PostDetailPageProps {
