@@ -1,3 +1,7 @@
+export default function PazzaPage() {
+    return null;
+}
+
 // import Link from 'next/link';
 // import NewPostButton from './components/NewPostButton';
 // interface PazzaPageProps {
