@@ -7,7 +7,8 @@ import CourseNavigation from "./Navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 export default function CoursesLayout({ children }: { children: ReactNode }) {
-    const { cid } = useParams();
+    const params = useParams();
+    const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const pathname = usePathname();
     const { courses } = useSelector((state: any) => state.coursesReducer);
     const course = courses.find((course: any) => course._id === cid);
@@ -22,7 +23,7 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
         <div id="wd-courses">
             <h2 className="text-danger">
                 <GiHamburgerMenu className="me-4 fs-4 mb-1" />
-                {course?.name} &gt; {currentSection}
+                {course && `${course.number} ${course.name}`} &gt; {currentSection}
             </h2>
             <div className="d-flex">
                 <div className="d-none d-md-block">

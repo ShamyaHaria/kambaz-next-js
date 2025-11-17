@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardBody, CardImg, CardText, CardTitle, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
-import { addEnrollment } from "../Database/enrollmentsReducer";
+import { addEnrollment } from "../enrollmentsReducer";
 import * as client from "../Courses/client";
 
 export default function Dashboard() {
