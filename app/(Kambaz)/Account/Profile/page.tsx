@@ -1,4 +1,5 @@
 "use client";
+import * as client from "../client";
 import { redirect } from "next/dist/client/components/navigation";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,7 +11,8 @@ export default function Profile() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [profile, setProfile] = useState(currentUser);
     const dispatch = useDispatch();
-    const signout = () => {
+    const signout = async () => {
+        await client.signout();
         dispatch(setCurrentUser(null));
         redirect("/Account/Signin");
     };
@@ -22,6 +24,10 @@ export default function Profile() {
     useEffect(() => {
         fetchProfile();
     }, []);
+    const updateProfile = async () => {
+        const updatedProfile = await client.updateUser(profile);
+        dispatch(setCurrentUser(updatedProfile));
+    };
 
     return (
         <div id="wd-profile-screen" className="wd-account-form">
@@ -67,8 +73,10 @@ export default function Profile() {
                         <option value="FACULTY">Faculty</option>{" "}
                         <option value="STUDENT">Student</option>
                     </select>
-                    <Button onClick={() =>
-                        dispatch(setCurrentUser(profile))}> Save
+                    <button onClick={updateProfile}>
+                        Update </button>
+                    <Button onClick={signout} className="w-100 mb-2" id="wd-signout-btn">
+                        Sign out
                     </Button>
                 </div>
             )}
