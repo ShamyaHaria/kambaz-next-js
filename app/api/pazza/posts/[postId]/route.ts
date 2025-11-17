@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Post from '@/models/Post';
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
     await connectDB();
-    const post = await Post.findById(params.postId).lean();
+    const { postId } = await params;
+    const post = await Post.findById(postId).lean();
+
     if (!post) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
         { status: 404 }
       );
     }
+
     return NextResponse.json({
       success: true,
       post,
