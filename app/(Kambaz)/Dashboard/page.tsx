@@ -21,10 +21,21 @@ export default function Dashboard() {
 
     const fetchCourses = async () => {
         try {
-            const courses = await client.findMyCourses();
+            let courses;
+            if (currentUser) {
+                courses = await client.findMyCourses();
+            } else {
+                courses = await client.fetchAllCourses();
+            }
             dispatch(setCourses(courses));
         } catch (error) {
             console.error(error);
+            try {
+                const allCourses = await client.fetchAllCourses();
+                dispatch(setCourses(allCourses));
+            } catch (e) {
+                console.error("Failed to fetch courses:", e);
+            }
         }
     };
 
@@ -35,17 +46,17 @@ export default function Dashboard() {
 
     const onDeleteCourse = async (courseId: string) => {
         const status = await client.deleteCourse(courseId);
-        dispatch(setCourses(courses.filter((course:any) =>
+        dispatch(setCourses(courses.filter((course: any) =>
             course._id !== courseId)));
     };
 
     const onUpdateCourse = async () => {
-    await client.updateCourse(course);
-    dispatch(setCourses(courses.map((c:any) => {
-        if (c._id === course._id) { return course; }
-        else { return c; }
-    })));};
-
+        await client.updateCourse(course);
+        dispatch(setCourses(courses.map((c: any) => {
+            if (c._id === course._id) { return course; }
+            else { return c; }
+        })));
+    };
 
     useEffect(() => {
         fetchCourses();
@@ -63,25 +74,32 @@ export default function Dashboard() {
     return (
         <div id="wd-dashboard">
             <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-            <h5>New Course
-                <button
-                    className="btn btn-primary float-end"
-                    onClick={onAddNewCourse}>
-                    Add
-                </button>
-                <Button className="float-end me-2"
-                    onClick={onUpdateCourse}>
-                    Update
-                </Button>
-            </h5>
-            <br />
-            <input value={course.name}
-                className="form-control mb-2"
-                onChange={(e) => setCourse({ ...course, name: e.target.value })} />
-            <textarea value={course.description}
-                className="form-control"
-                onChange={(e) => setCourse({ ...course, description: e.target.value })} />
-            <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
+            {currentUser && (
+                <>
+                    <h5>New Course
+                        <button
+                            className="btn btn-primary float-end"
+                            onClick={onAddNewCourse}>
+                            Add
+                        </button>
+                        <Button className="float-end me-2"
+                            onClick={onUpdateCourse}>
+                            Update
+                        </Button>
+                    </h5>
+                    <br />
+                    <input value={course.name}
+                        className="form-control mb-2"
+                        onChange={(e) => setCourse({ ...course, name: e.target.value })} />
+                    <textarea value={course.description}
+                        className="form-control"
+                        onChange={(e) => setCourse({ ...course, description: e.target.value })} />
+                </>
+            )}
+            <h2 id="wd-dashboard-published">
+                {currentUser ? "Published Courses" : "All Courses"} ({courses.length})
+            </h2>
+            <hr />
             <div id="wd-dashboard-courses">
                 <Row xs={1} md={5} className="g-4">
                     {courses.map((course: any) => (
@@ -96,20 +114,24 @@ export default function Dashboard() {
                                             {course.description}
                                         </CardText>
                                         <Button variant="primary">Go</Button>
-                                        <Button onClick={(event) => {
-                                            event.preventDefault();
-                                            onDeleteCourse(course._id);
-                                        }} className="float-end">
-                                            Delete
-                                        </Button>
-                                        <Button id="wd-edit-course-click"
-                                            onClick={(event) => {
-                                                event.preventDefault();
-                                                setCourse(course);
-                                            }}
-                                            className="me-2 float-end">
-                                            Edit
-                                        </Button>
+                                        {currentUser && (
+                                            <>
+                                                <Button onClick={(event) => {
+                                                    event.preventDefault();
+                                                    onDeleteCourse(course._id);
+                                                }} className="float-end">
+                                                    Delete
+                                                </Button>
+                                                <Button id="wd-edit-course-click"
+                                                    onClick={(event) => {
+                                                        event.preventDefault();
+                                                        setCourse(course);
+                                                    }}
+                                                    className="me-2 float-end">
+                                                    Edit
+                                                </Button>
+                                            </>
+                                        )}
                                     </CardBody>
                                 </Link>
                             </Card>
