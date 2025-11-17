@@ -1,6 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
-const initialState = { modules: [], };
+
+interface Module {
+    _id: string;
+    name: string;
+    course: string;
+    editing?: boolean;
+    lessons?: any[];
+}
+
+interface ModulesState {
+    modules: Module[];
+}
+
+const initialState: ModulesState = {
+    modules: [],
+};
+
 const modulesSlice = createSlice({
     name: "modules",
     initialState,
@@ -9,7 +25,7 @@ const modulesSlice = createSlice({
             state.modules = action.payload;
         },
         addModule: (state, { payload: module }) => {
-            const newModule: any = {
+            const newModule: Module = {
                 _id: uuidv4(),
                 lessons: [],
                 name: module.name,
@@ -19,9 +35,9 @@ const modulesSlice = createSlice({
         },
         deleteModule: (state, { payload: moduleId }) => {
             state.modules = state.modules.filter(
-                (m) => m._id !== moduleId);
+                (m) => m._id !== moduleId
+            );
         },
-
         updateModule: (state, { payload: module }) => {
             state.modules = state.modules.map((m) =>
                 m._id === module._id ? module : m
@@ -34,6 +50,7 @@ const modulesSlice = createSlice({
         },
     },
 });
-export const { addModule, deleteModule,
-    updateModule, editModule, setModules } = modulesSlice.actions;
+
+export const { addModule, deleteModule, updateModule, editModule, setModules } =
+    modulesSlice.actions;
 export default modulesSlice.reducer;
