@@ -13,15 +13,18 @@ import { setModules, addModule, editModule, updateModule, deleteModule } from ".
 import { useSelector, useDispatch } from "react-redux";
 
 export default function Modules() {
-    const { cid } = useParams();
+    const params = useParams();
+    const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const [moduleName, setModuleName] = useState("");
     const { modules } = useSelector((state: any) => state.modulesReducer);
     const dispatch = useDispatch();
+    
     const fetchModules = async () => {
-        const modules = await client.
-            findModulesForCourse(cid as string);
+        if (!cid) return;
+        const modules = await client.findModulesForCourse(cid);
         dispatch(setModules(modules));
     };
+    
     useEffect(() => {
         fetchModules();
     }, []);
@@ -37,7 +40,6 @@ export default function Modules() {
         await client.deleteModule(moduleId);
         const newModules = modules.filter((m: any) => m._id !== moduleId)
         dispatch(setModules(newModules));
-
     };
 
     const onUpdateModule = async (module: any) => {
@@ -46,8 +48,6 @@ export default function Modules() {
             (m: any) => m._id === module._id ? module : m);
         dispatch(setModules(newModules));
     };
-
-
 
     return (
         <div>

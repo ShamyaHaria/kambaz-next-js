@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
@@ -11,15 +11,28 @@ import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { CiSearch } from 'react-icons/ci';
 import { FaCheckCircle } from 'react-icons/fa';
 import { Button, Form } from 'react-bootstrap';
-import { addAssignment, deleteAssignment } from './reducer';
+import { setAssignments, addAssignment, deleteAssignment } from './reducer';
+import * as client from '../../client';
 
 export default function Assignments() {
-    const { cid } = useParams();
+    const params = useParams();
+    const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const dispatch = useDispatch();
     const [assignmentName, setAssignmentName] = useState("");
 
-    const handleAddAssignment = () => {
+    const fetchAssignments = async () => {
+        if (!cid) return;
+        const assignments = await client.findAssignmentsForCourse(cid);
+        dispatch(setAssignments(assignments));
+    };
+
+    useEffect(() => {
+        fetchAssignments();
+    }, []);
+
+    const onCreateAssignmentForCourse = async () => {
+        if (!cid) return;
         const newAssignment = {
             title: assignmentName,
             course: cid,
@@ -28,11 +41,16 @@ export default function Assignments() {
             dueDate: "May 13",
             points: 100
         };
-        dispatch(addAssignment(newAssignment));
+        const assignment = await client.createAssignmentForCourse(cid, newAssignment);
+        dispatch(setAssignments([...assignments, assignment]));
         setAssignmentName("");
     };
 
-    const assignmentsList = assignments.filter((assignment: any) => assignment.course === cid);
+    const onRemoveAssignment = async (assignmentId: string) => {
+        await client.deleteAssignment(assignmentId);
+        const newAssignments = assignments.filter((a: any) => a._id !== assignmentId);
+        dispatch(setAssignments(newAssignments));
+    };
 
     return (
         <div id="wd-assignments">
@@ -51,13 +69,13 @@ export default function Assignments() {
                     <Button variant="secondary" className="me-2" id="wd-add-assignment-group">
                         <FaPlus className="me-1" /> Group
                     </Button>
-                    <Button variant="danger" id="wd-add-assignment" onClick={handleAddAssignment}>
+                    <Button variant="danger" id="wd-add-assignment" onClick={onCreateAssignmentForCourse}>
                         <FaPlus className="me-1" /> Assignment
                     </Button>
                 </div>
             </div>
 
-            <input 
+            <input
                 className="form-control mb-3 w-50"
                 placeholder="New Assignment Name"
                 value={assignmentName}
@@ -78,24 +96,24 @@ export default function Assignments() {
                 </div>
 
                 <ul className="list-group list-group-flush" id="wd-assignment-list">
-                    {assignmentsList.map((assignment: any) => (
+                    {assignments.map((assignment: any) => (
                         <li key={assignment._id} className="wd-assignment-list-item list-group-item d-flex align-items-center">
                             <BsGripVertical className="me-2 fs-3" />
                             <MdOutlineAssignment className="me-3 fs-3 text-success" />
                             <div className="flex-grow-1">
-                                <Link href={`/Courses/${cid}/Assignments/${assignment._id}`} 
+                                <Link href={`/Courses/${cid}/Assignments/${assignment._id}`}
                                     className="wd-assignment-link text-decoration-none text-dark fw-bold">
                                     {assignment.title}
                                 </Link>
                                 <div className="wd-assignment-info">
-                                    <span className="text-danger">{assignment.description}</span> | 
-                                    <strong> Not available until</strong> {assignment.availableDate} at 12:00am | 
+                                    <span className="text-danger">{assignment.description}</span> |
+                                    <strong> Not available until</strong> {assignment.availableDate} at 12:00am |
                                     <strong> Due</strong> {assignment.dueDate} at 11:59pm | {assignment.points} pts
                                 </div>
                             </div>
-                            <FaTrash 
-                                className="text-danger me-3" 
-                                onClick={() => dispatch(deleteAssignment(assignment._id))}
+                            <FaTrash
+                                className="text-danger me-3"
+                                onClick={() => onRemoveAssignment(assignment._id)}
                                 style={{ cursor: 'pointer' }}
                             />
                             <FaCheckCircle className="text-success me-2" />

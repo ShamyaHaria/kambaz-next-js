@@ -1,16 +1,21 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useParams } from "next/navigation";
 import { updateAssignment } from "../reducer";
+import * as client from "../../../client";
+
 export default function AssignmentEditor() {
-    const { cid, aid } = useParams();
+    const params = useParams();
+    const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
+    const aid = Array.isArray(params.aid) ? params.aid[0] : params.aid;
     const router = useRouter();
     const dispatch = useDispatch();
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const assignmentFromStore = assignments.find((a: any) => a._id === aid);
+
     const [assignment, setAssignment] = useState(assignmentFromStore || {
         _id: aid,
         title: "New Assignment",
@@ -29,13 +34,17 @@ export default function AssignmentEditor() {
             fileUploads: false
         }
     });
+
     const handleCancel = () => {
         router.push(`/Courses/${cid}/Assignments`);
     };
-    const handleSave = () => {
+
+    const handleSave = async () => {
+        await client.updateAssignment(assignment);
         dispatch(updateAssignment(assignment));
         router.push(`/Courses/${cid}/Assignments`);
     };
+
     const formatDateForInput = (dateStr: string) => {
         if (!dateStr) return "";
         if (dateStr.includes("-")) return `2024-${dateStr}T23:59`;
@@ -47,11 +56,13 @@ export default function AssignmentEditor() {
         const [month, day] = dateStr.split(" ");
         return `2024-${months[month]}-${day.padStart(2, '0')}T23:59`;
     };
+
     const extractDateString = (datetime: string) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const date = new Date(datetime);
         return `${months[date.getMonth()]} ${date.getDate()}`;
     };
+
     return (
         <div id="wd-assignments-editor" className="p-4">
             <Form>
@@ -63,6 +74,7 @@ export default function AssignmentEditor() {
                         onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}
                     />
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="wd-description">Description</Form.Label>
                     <Form.Control
@@ -73,6 +85,7 @@ export default function AssignmentEditor() {
                         onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
                     />
                 </Form.Group>
+
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label htmlFor="wd-points">Points</Form.Label>
@@ -84,6 +97,7 @@ export default function AssignmentEditor() {
                         />
                     </Form.Group>
                 </Row>
+
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label htmlFor="wd-group">Assignment Group</Form.Label>
@@ -98,6 +112,7 @@ export default function AssignmentEditor() {
                         </Form.Select>
                     </Form.Group>
                 </Row>
+
                 <Row className="mb-3">
                     <Form.Group as={Col}>
                         <Form.Label htmlFor="wd-display-grade-as">Display Grade as</Form.Label>
@@ -111,6 +126,7 @@ export default function AssignmentEditor() {
                         </Form.Select>
                     </Form.Group>
                 </Row>
+
                 <div className="border rounded p-3 mb-3">
                     <Row className="mb-3">
                         <Form.Group as={Col}>
@@ -127,6 +143,7 @@ export default function AssignmentEditor() {
                             </Form.Select>
                         </Form.Group>
                     </Row>
+
                     <div className="border rounded p-3">
                         <Form.Label className="fw-bold">Online Entry Options</Form.Label>
                         <Form.Check
@@ -181,6 +198,7 @@ export default function AssignmentEditor() {
                         />
                     </div>
                 </div>
+
                 <div className="border rounded p-3 mb-3">
                     <Form.Label className="fw-bold">Assign</Form.Label>
                     <Form.Group className="mb-3">
@@ -191,6 +209,7 @@ export default function AssignmentEditor() {
                             onChange={(e) => setAssignment({ ...assignment, assignTo: e.target.value })}
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="wd-due-date">Due</Form.Label>
                         <div className="position-relative">
@@ -202,6 +221,7 @@ export default function AssignmentEditor() {
                             />
                         </div>
                     </Form.Group>
+
                     <Row>
                         <Col md={6}>
                             <Form.Group className="mb-3">
@@ -231,6 +251,7 @@ export default function AssignmentEditor() {
                         </Col>
                     </Row>
                 </div>
+
                 <hr />
                 <div className="d-flex justify-content-end gap-2">
                     <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
