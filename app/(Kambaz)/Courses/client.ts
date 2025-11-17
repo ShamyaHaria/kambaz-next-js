@@ -91,3 +91,16 @@ export const updateAssignment = async (assignment: any) => {
     assignment);
   return data;
 };
+
+export const enrollInCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/enroll`
+  );
+  return data;
+};
+
+export const unenrollFromCourse = async (courseId: string) => {
+  await axiosWithCredentials.delete(
+    `${COURSES_API}/${courseId}/enroll`
+  );
+};
