@@ -104,3 +104,8 @@ export const unenrollFromCourse = async (courseId: string) => {
     `${COURSES_API}/${courseId}/enroll`
   );
 };
+
+export const fetchEnrollments = async () => {
+  const { data } = await axios.get(`${HTTP_SERVER}/api/enrollments`);
+  return data;
+};
