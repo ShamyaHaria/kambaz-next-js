@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addPost } from './pazzaSlice';
 import { pazzaAPI } from './client';
+import styles from './pazza.module.css';
 
 interface NewPostModalProps {
     courseId: string;
@@ -14,30 +15,24 @@ interface NewPostModalProps {
 
 export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostModalProps) {
     const dispatch = useDispatch();
-    const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('Concept');
+    const [postTo, setPostTo] = useState('Entire Class');
+    const [selectedFolder, setSelectedFolder] = useState('hw1');
+    const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [editorType, setEditorType] = useState('Plain text editor');
+    const [showName, setShowName] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const availableTags = [
-        'hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6', 'hw7',
-        'labs', 'code_walks', 'logistics', 'other'
-    ];
-
-    const handleTagToggle = (tag: string) => {
-        if (selectedTags.includes(tag)) {
-            setSelectedTags(selectedTags.filter(t => t !== tag));
-        } else {
-            setSelectedTags([...selectedTags, tag]);
-        }
-    };
+    const categories = ['Concept', 'Clarification', 'Testing', 'Bug', 'Setup', 'Other'];
+    const folders = ['hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6', 'hw7', 'labs', 'code_walks', 'logistics', 'other'];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!title.trim() || !content.trim()) {
-            setError('Title and content are required');
+        if (!subject.trim() || !content.trim()) {
+            setError('Subject and content are required');
             return;
         }
 
@@ -46,9 +41,9 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
 
         try {
             const response = await pazzaAPI.createPost(courseId, {
-                title: title.trim(),
+                title: subject.trim(),
                 content: content.trim(),
-                tags: selectedTags,
+                tags: [selectedFolder],
             });
 
             dispatch(addPost(response.data));
@@ -61,95 +56,217 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
         }
     };
 
+    const handleSaveDraft = () => {
+        // TODO: Implement save draft functionality
+        console.log('Save draft');
+    };
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold">New Post</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700 transition"
-                    >
-                        <X size={24} />
+                <div className={styles.modalHeader}>
+                    <div className={styles.modalHeaderLeft}>
+                        <button onClick={onClose} className={styles.backButton}>
+                            ←
+                        </button>
+                        <h2 className={styles.modalTitle}>New Post</h2>
+                    </div>
+                    <button onClick={onClose} className={styles.closeButton}>
+                        <X size={20} />
                     </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6">
+                <form onSubmit={handleSubmit} className={styles.modalBody}>
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+                        <div className={styles.errorMessage}>
                             {error}
                         </div>
                     )}
 
-                    {/* Title */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Title *
+                    {/* Category Selection */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            What category does your question fall under?<span className={styles.required}>*</span>
                         </label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Enter post title"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
-
-                    {/* Content */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Content *
-                        </label>
-                        <textarea
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            placeholder="Enter your question or message"
-                            rows={8}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
-
-                    {/* Tags */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Tags
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                            {availableTags.map(tag => (
+                        <div className={styles.categoryButtons}>
+                            {categories.map((cat) => (
                                 <button
-                                    key={tag}
+                                    key={cat}
                                     type="button"
-                                    onClick={() => handleTagToggle(tag)}
-                                    className={`px-3 py-1.5 rounded-full text-sm transition ${selectedTags.includes(tag)
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
+                                    onClick={() => setCategory(cat)}
+                                    className={`${styles.categoryButton} ${category === cat ? styles.categoryButtonActive : ''}`}
                                 >
-                                    {tag}
+                                    {category === cat ? '●' : '○'} {cat}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center justify-end space-x-3">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition"
+                    {/* Post To */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            Post To<span className={styles.required}>*</span>
+                        </label>
+                        <div className={styles.radioGroup}>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="postTo"
+                                    value="Entire Class"
+                                    checked={postTo === 'Entire Class'}
+                                    onChange={(e) => setPostTo(e.target.value)}
+                                    className={styles.radioInput}
+                                />
+                                <span>Entire Class</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="postTo"
+                                    value="Instructor(s)"
+                                    checked={postTo === 'Instructor(s)'}
+                                    onChange={(e) => setPostTo(e.target.value)}
+                                    className={styles.radioInput}
+                                />
+                                <span>Instructor(s)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Select Folder */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            Select Folder(s)<span className={styles.required}>*</span>
+                        </label>
+                        <div className={styles.folderButtons}>
+                            {folders.map((folder) => (
+                                <button
+                                    key={folder}
+                                    type="button"
+                                    onClick={() => setSelectedFolder(folder)}
+                                    className={`${styles.folderButton} ${selectedFolder === folder ? styles.folderButtonActive : ''}`}
+                                >
+                                    {folder}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Subject */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            Subject<span className={styles.required}>*</span>
+                        </label>
+                        <input
+                            type="text"
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
+                            placeholder="Enter a one line summary, 100 characters or less"
+                            maxLength={100}
+                            className={styles.textInput}
+                            required
+                        />
+                    </div>
+
+                    {/* Content Editor Selection */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            What do you need help with?<span className={styles.required}>*</span>
+                        </label>
+                        <div className={styles.radioGroup}>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="editorType"
+                                    value="Rich text editor"
+                                    checked={editorType === 'Rich text editor'}
+                                    onChange={(e) => setEditorType(e.target.value)}
+                                    className={styles.radioInput}
+                                />
+                                <span>Rich text editor</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="editorType"
+                                    value="Plain text editor"
+                                    checked={editorType === 'Plain text editor'}
+                                    onChange={(e) => setEditorType(e.target.value)}
+                                    className={styles.radioInput}
+                                />
+                                <span>Plain text editor</span>
+                            </label>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="editorType"
+                                    value="Markdown editor"
+                                    checked={editorType === 'Markdown editor'}
+                                    onChange={(e) => setEditorType(e.target.value)}
+                                    className={styles.radioInput}
+                                />
+                                <span>Markdown editor</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Content Textarea */}
+                    <div className={styles.formGroup}>
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Enter your question or message here..."
+                            rows={10}
+                            className={styles.textArea}
+                            required
+                        />
+                        {editorType === 'Markdown editor' && (
+                            <p className={styles.helperText}>
+                                Use &lt;md&gt;markdown block&lt;/md&gt; for markdown. Use $$latex formula$$ for LaTeX.
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Show Name */}
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>
+                            Post as
+                        </label>
+                        <select
+                            value={showName ? 'Shamya Mitesh Haria' : 'Anonymous'}
+                            onChange={(e) => setShowName(e.target.value === 'Shamya Mitesh Haria')}
+                            className={styles.selectInput}
                         >
-                            Cancel
-                        </button>
+                            <option value="Shamya Mitesh Haria">Shamya Mitesh Haria</option>
+                            <option value="Anonymous">Anonymous</option>
+                        </select>
+                    </div>
+
+                    <p className={styles.requiredNote}>* Required fields</p>
+
+                    {/* Actions */}
+                    <div className={styles.modalActions}>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className={styles.submitButton}
                         >
-                            {loading ? 'Creating...' : 'Create Post'}
+                            {loading ? 'Posting...' : `Post My Question to ${courseId}!`}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSaveDraft}
+                            className={styles.draftButton}
+                        >
+                            Save Draft
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className={styles.cancelButton}
+                        >
+                            Cancel
                         </button>
                     </div>
                 </form>

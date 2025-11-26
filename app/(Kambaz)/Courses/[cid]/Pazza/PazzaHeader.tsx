@@ -1,6 +1,8 @@
 'use client';
 
-import { Search, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Search, Plus, ChevronDown } from 'lucide-react';
 import styles from './pazza.module.css';
 
 interface PazzaHeaderProps {
@@ -9,19 +11,127 @@ interface PazzaHeaderProps {
 }
 
 export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
+    const [showCourseDropdown, setShowCourseDropdown] = useState(false);
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+    // Get courses and user from Redux
+    const courses = useSelector((state: any) => state.coursesReducer.courses);
+    const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
+
+    // Find current course
+    const currentCourse = courses.find((c: any) => c._id === courseId);
+
+    const handleCourseChange = (newCourseId: string) => {
+        setShowCourseDropdown(false);
+        window.location.href = `/Courses/${newCourseId}/Pazza`;
+    };
+
+    // Close dropdowns when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest(`.${styles.courseDropdownContainer}`)) {
+                setShowCourseDropdown(false);
+            }
+            if (!target.closest(`.${styles.userDropdownContainer}`)) {
+                setShowUserDropdown(false);
+            }
+        };
+
+        if (showCourseDropdown || showUserDropdown) {
+            document.addEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [showCourseDropdown, showUserDropdown]);
+
+    const getUserInitials = () => {
+        if (!currentUser) return 'U';
+        const firstName = currentUser.firstName || '';
+        const lastName = currentUser.lastName || '';
+        return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || 'U';
+    };
+
+    const getUserFullName = () => {
+        if (!currentUser) return 'User';
+        return `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.username || 'User';
+    };
+
     return (
         <div className={styles.header}>
             <div className={styles.headerTop}>
                 <div className={styles.headerLeft}>
                     <h1 className={styles.logo}>pazza</h1>
-                    <div className={styles.courseInfo}>
-                        <span className={styles.courseName}>CS 5010.MERGED.202610</span>
-                        <span className={styles.courseNumber}>47</span>
+
+                    {/* Course Dropdown */}
+                    <div className={styles.courseDropdownContainer}>
+                        <button
+                            className={`${styles.courseDropdownButton} ${showCourseDropdown ? styles.courseDropdownButtonActive : ''}`}
+                            onClick={() => setShowCourseDropdown(!showCourseDropdown)}
+                        >
+                            <span className={styles.courseName}>
+                                {currentCourse?.name || currentCourse?.number || 'Select Course'}
+                            </span>
+                            <span className={styles.courseNumber}>47</span>
+                            <ChevronDown size={18} className={styles.dropdownIcon} />
+                        </button>
+
+                        {showCourseDropdown && (
+                            <div className={styles.courseDropdownMenu}>
+                                {courses.map((course: any) => (
+                                    <button
+                                        key={course._id}
+                                        className={`${styles.courseDropdownItem} ${course._id === courseId ? styles.courseDropdownItemActive : ''}`}
+                                        onClick={() => handleCourseChange(course._id)}
+                                    >
+                                        <div className={styles.courseDropdownItemContent}>
+                                            <div className={styles.courseDropdownItemHeader}>
+                                                <span className={styles.courseDropdownItemCode}>
+                                                    {course.number || course.name}
+                                                </span>
+                                                <span className={styles.courseDropdownItemBadge}>
+                                                    {course.term || 'Fall 2025'}
+                                                </span>
+                                            </div>
+                                            <div className={styles.courseDropdownItemName}>
+                                                {course.name}
+                                            </div>
+                                            {course.description && (
+                                                <div className={styles.courseDropdownItemSemester}>
+                                                    {course.description.substring(0, 50)}...
+                                                </div>
+                                            )}
+                                        </div>
+                                        <span className={styles.courseDropdownItemCount}>
+                                            {course._id === courseId ? '47' : '0'}
+                                        </span>
+                                    </button>
+                                ))}
+
+                                <div className={styles.courseDropdownDivider} />
+
+                                <button
+                                    className={styles.courseDropdownManage}
+                                    onClick={() => window.location.href = '/Dashboard'}
+                                >
+                                    Manage class dropdown
+                                </button>
+
+                                <button
+                                    className={styles.courseDropdownJoin}
+                                    onClick={() => window.location.href = '/Dashboard'}
+                                >
+                                    → Join Another Class
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 <div className={styles.headerCenter}>
-                    <a href="#" className={styles.navLink}>Q & A</a>
+                    <a href="#" className={`${styles.navLink} ${styles.navLinkActive}`}>Q & A</a>
                     <a href="#" className={styles.navLink}>Resources</a>
                     <a href="#" className={styles.navLink}>Statistics</a>
                 </div>
@@ -31,9 +141,74 @@ export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
                         <span>📦</span>
                         <span>Employers</span>
                     </button>
-                    <div className={styles.userInfo}>
-                        <span>Shamya Mitesh Haria</span>
-                        <div className={styles.avatar}>S</div>
+
+                    {/* User Dropdown */}
+                    <div className={styles.userDropdownContainer}>
+                        <button
+                            className={`${styles.userDropdownButton} ${showUserDropdown ? styles.userDropdownButtonActive : ''}`}
+                            onClick={() => setShowUserDropdown(!showUserDropdown)}
+                        >
+                            <span className={styles.userName}>{getUserFullName()}</span>
+                            <div className={styles.avatar}>{getUserInitials()}</div>
+                        </button>
+
+                        {showUserDropdown && (
+                            <div className={styles.userDropdownMenu}>
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>⚙️</span>
+                                    <span>Account Settings</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>🎨</span>
+                                    <span>Theme</span>
+                                    <span className={styles.userDropdownArrow}>›</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>🌙</span>
+                                    <span>Enable Dark Mode</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>📏</span>
+                                    <span>Enable Compact Mode</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>❓</span>
+                                    <span>Support</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>🐛</span>
+                                    <span>Report Bug</span>
+                                </button>
+
+                                <button className={styles.userDropdownItem}>
+                                    <span className={styles.userDropdownIcon}>🏠</span>
+                                    <span>Piazza Homepage</span>
+                                </button>
+
+                                <div className={styles.courseDropdownDivider} />
+
+                                <button
+                                    className={styles.userDropdownItemBlue}
+                                    onClick={() => window.location.href = '/Dashboard'}
+                                >
+                                    <span className={styles.userDropdownIcon}>→</span>
+                                    <span>Join Another Class</span>
+                                </button>
+
+                                <button
+                                    className={styles.userDropdownItemBlue}
+                                    onClick={() => window.location.href = '/Account/Signin'}
+                                >
+                                    <span className={styles.userDropdownIcon}>↪</span>
+                                    <span>Log Out</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
