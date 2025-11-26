@@ -55,9 +55,9 @@ export default function PostCard({ post }: PostCardProps) {
             {/* Left Icon */}
             <div className={`${styles.postIcon} ${post.isInstructor ? styles.instructor : styles.student}`}>
                 {post.isInstructor ? (
-                    <FileText size={20} />
+                    <FileText size={16} />
                 ) : (
-                    <MessageSquare size={20} />
+                    <MessageSquare size={16} />
                 )}
             </div>
 
@@ -65,7 +65,7 @@ export default function PostCard({ post }: PostCardProps) {
             <div className={styles.postContent}>
                 <div className={styles.postHeader}>
                     {post.isPinned && (
-                        <Pin size={14} style={{ color: '#6b7280', fill: '#6b7280' }} />
+                        <Pin size={12} style={{ color: '#6b7280', fill: '#6b7280' }} />
                     )}
                     <span className={`${styles.roleBadge} ${styles[post.author.role]}`}>
                         {post.author.role === 'instructor' ? 'Instr' : post.author.role === 'ta' ? 'TA' : 'Student'}
@@ -96,17 +96,17 @@ export default function PostCard({ post }: PostCardProps) {
             <div className={styles.postStats}>
                 {getUnresolvedCount() > 0 && (
                     <div className={styles.unresolvedBadge}>
-                        {getUnresolvedCount()} Unresolved followup{getUnresolvedCount() > 1 ? 's' : ''}
+                        {getUnresolvedCount()} Unresolved
                     </div>
                 )}
 
                 <div className={styles.statsRow}>
                     <div className={styles.statItem}>
-                        <Eye size={14} />
+                        <Eye size={12} />
                         <span>{post.views}</span>
                     </div>
                     <div className={styles.statItem}>
-                        <MessageSquare size={14} />
+                        <MessageSquare size={12} />
                         <span>{post.followups.length}</span>
                     </div>
                 </div>

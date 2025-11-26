@@ -71,16 +71,14 @@ export default function PostsList({
                         onClick={onTogglePinned}
                         className={`${styles.filterButton} ${showPinnedOnly ? styles.active : ''}`}
                     >
-                        <Pin size={16} />
-                        <span>Pinned</span>
+                        📌 Pinned
                     </button>
 
                     <button
                         onClick={() => setShowFilters(!showFilters)}
                         className={styles.filterButton}
                     >
-                        <Filter size={16} />
-                        <span>All Posts</span>
+                        🔽 All Posts
                     </button>
                 </div>
 
@@ -116,8 +114,7 @@ export default function PostsList({
             {!showPinnedOnly && pinnedPosts.length > 0 && (
                 <div className={styles.pinnedSection}>
                     <div className={styles.pinnedHeader}>
-                        <Pin size={16} />
-                        <span>Pinned</span>
+                        📌 Pinned
                     </div>
                     <div>
                         {pinnedPosts.map(post => (
