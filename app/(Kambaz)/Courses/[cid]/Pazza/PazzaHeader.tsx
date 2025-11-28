@@ -8,9 +8,11 @@ import styles from './pazza.module.css';
 interface PazzaHeaderProps {
     courseId: string;
     onNewPost: () => void;
+    onShowSetup: () => void;
+    onLogout: () => void;
 }
 
-export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
+export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout }: PazzaHeaderProps) {
     const [showCourseDropdown, setShowCourseDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -113,18 +115,28 @@ export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
                                 <div className={styles.courseDropdownDivider} />
 
                                 <button
-                                    className={styles.courseDropdownManage}
-                                    onClick={() => window.location.href = '/Dashboard'}
+                                    className={styles.userDropdownItemBlue}
+                                    onClick={() => window.location.href = `/Courses/${courseId}/Pazza/setup`}
                                 >
-                                    Manage class dropdown
+                                    <span className={styles.userDropdownIcon}>⚙️</span>
+                                    <span>Piazza Settings</span>
                                 </button>
 
                                 <button
-                                    className={styles.courseDropdownJoin}
+                                    className={styles.userDropdownItemBlue}
                                     onClick={() => window.location.href = '/Dashboard'}
                                 >
-                                    → Join Another Class
+                                    <span className={styles.userDropdownIcon}>→</span>
+                                    <span>Join Another Class</span>
                                 </button>
+
+                                <button
+                                    className={styles.userDropdownItemBlue}
+                                    onClick={onLogout}>
+                                    <span className={styles.userDropdownIcon}>↪</span>
+                                    <span>Log Out</span>
+                                </button>
+
                             </div>
                         )}
                     </div>
@@ -185,7 +197,9 @@ export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
                                     <span>Report Bug</span>
                                 </button>
 
-                                <button className={styles.userDropdownItem}>
+                                <button
+                                    className={styles.userDropdownItem}
+                                    onClick={() => window.location.href = `/Courses/${courseId}/Pazza/setup`}>
                                     <span className={styles.userDropdownIcon}>🏠</span>
                                     <span>Piazza Homepage</span>
                                 </button>
@@ -194,16 +208,14 @@ export default function PazzaHeader({ courseId, onNewPost }: PazzaHeaderProps) {
 
                                 <button
                                     className={styles.userDropdownItemBlue}
-                                    onClick={() => window.location.href = '/Dashboard'}
-                                >
+                                    onClick={() => window.location.href = '/Dashboard'}>
                                     <span className={styles.userDropdownIcon}>→</span>
                                     <span>Join Another Class</span>
                                 </button>
 
                                 <button
                                     className={styles.userDropdownItemBlue}
-                                    onClick={() => window.location.href = '/Account/Signin'}
-                                >
+                                    onClick={onLogout}>
                                     <span className={styles.userDropdownIcon}>↪</span>
                                     <span>Log Out</span>
                                 </button>

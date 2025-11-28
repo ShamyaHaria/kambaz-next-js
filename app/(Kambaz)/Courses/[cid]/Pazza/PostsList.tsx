@@ -34,6 +34,8 @@ interface PostsListProps {
     onTogglePinned: () => void;
     selectedTags: string[];
     onTagSelect: (tag: string) => void;
+    onPostSelect: (post: Post) => void;
+    selectedPostId?: string;
 }
 
 export default function PostsList({
@@ -43,6 +45,8 @@ export default function PostsList({
     onTogglePinned,
     selectedTags,
     onTagSelect,
+    onPostSelect,
+    selectedPostId,
 }: PostsListProps) {
     const [showFilters, setShowFilters] = useState(false);
 
@@ -118,7 +122,12 @@ export default function PostsList({
                     </div>
                     <div>
                         {pinnedPosts.map(post => (
-                            <PostCard key={post._id} post={post} />
+                            <PostCard
+                                key={post._id}
+                                post={post}
+                                onSelect={onPostSelect}
+                                isSelected={post._id === selectedPostId}
+                            />
                         ))}
                     </div>
                 </div>
@@ -132,7 +141,12 @@ export default function PostsList({
                     </div>
                 ) : (
                     (showPinnedOnly ? pinnedPosts : regularPosts).map(post => (
-                        <PostCard key={post._id} post={post} />
+                        <PostCard
+                            key={post._id}
+                            post={post}
+                            onSelect={onPostSelect}
+                            isSelected={post._id === selectedPostId}
+                        />
                     ))
                 )}
             </div>

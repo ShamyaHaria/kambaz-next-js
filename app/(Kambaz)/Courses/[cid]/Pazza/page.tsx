@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPosts, setStats, setSelectedTags } from './pazzaSlice';
+import { setPosts, setStats, setSelectedTags, setCurrentPost } from './pazzaSlice';
 import PazzaHeader from './PazzaHeader';
 import ClassAtGlance from './ClassAtGlance';
 import PostsList from './PostsList';
 import NewPostModal from './NewPostModal';
+import PostDetailView from './PostDetailView';
+import PiazzaSetupView from './PiazzaSetupView';
 
 // Mock data for testing
 const mockStats = {
@@ -189,9 +191,10 @@ export default function PazzaPage() {
     const courseId = params.cid as string;
     const dispatch = useDispatch();
 
-    const { posts, stats, selectedTags, loading } = useSelector((state: any) => state.pazzaReducer);
+    const { posts, stats, selectedTags, currentPost } = useSelector((state: any) => state.pazzaReducer);
     const [showNewPostModal, setShowNewPostModal] = useState(false);
     const [showPinnedOnly, setShowPinnedOnly] = useState(false);
+    const [showSetup, setShowSetup] = useState(false);
 
     useEffect(() => {
         // Load mock data
@@ -207,6 +210,10 @@ export default function PazzaPage() {
         }
     };
 
+    const handlePostSelect = (post: any) => {
+        dispatch(setCurrentPost(post));
+    };
+
     const filteredPosts = posts.filter((post: any) => {
         if (selectedTags.length > 0) {
             return post.tags.some((tag: string) => selectedTags.includes(tag));
@@ -214,11 +221,22 @@ export default function PazzaPage() {
         return true;
     });
 
+    // If showing setup view
+    if (showSetup) {
+        return (
+            <div className="min-h-screen bg-gray-50">
+                <PiazzaSetupView courseId={courseId} />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50">
             <PazzaHeader
                 courseId={courseId}
                 onNewPost={() => setShowNewPostModal(true)}
+                onShowSetup={() => setShowSetup(true)}
+                onLogout={() => setShowSetup(true)}
             />
 
             <div className="max-w-full px-6 py-6">
@@ -228,17 +246,26 @@ export default function PazzaPage() {
                     <div className="bg-white rounded-lg shadow-md border border-gray-200">
                         <PostsList
                             posts={filteredPosts}
-                            loading={loading}
+                            loading={false}
                             showPinnedOnly={showPinnedOnly}
                             onTogglePinned={() => setShowPinnedOnly(!showPinnedOnly)}
                             selectedTags={selectedTags}
                             onTagSelect={handleTagSelect}
+                            onPostSelect={handlePostSelect}
+                            selectedPostId={currentPost?._id}
                         />
                     </div>
 
-                    {/* Right Column - Class at a Glance */}
+                    {/* Right Column - Class at a Glance OR Post Detail */}
                     <div>
-                        <ClassAtGlance stats={stats} />
+                        {currentPost ? (
+                            <PostDetailView
+                                post={currentPost}
+                                onClose={() => dispatch(setCurrentPost(null))}
+                            />
+                        ) : (
+                            <ClassAtGlance stats={stats} />
+                        )}
                     </div>
                 </div>
             </div>

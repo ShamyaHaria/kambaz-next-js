@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { MessageSquare, Eye, FileText, Pin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import styles from './pazza.module.css';
@@ -29,15 +28,11 @@ interface Post {
 
 interface PostCardProps {
     post: Post;
+    onSelect: (post: Post) => void;
+    isSelected: boolean;
 }
 
-export default function PostCard({ post }: PostCardProps) {
-    const router = useRouter();
-
-    const handleClick = () => {
-        router.push(`/Courses/${post.courseId}/Pazza/${post._id}`);
-    };
-
+export default function PostCard({ post, onSelect, isSelected }: PostCardProps) {
     const getTimeAgo = (date: string) => {
         try {
             return formatDistanceToNow(new Date(date), { addSuffix: true });
@@ -51,7 +46,10 @@ export default function PostCard({ post }: PostCardProps) {
     };
 
     return (
-        <div className={styles.postCard} onClick={handleClick}>
+        <div
+            className={`${styles.postCard} ${isSelected ? styles.postCardSelected : ''}`}
+            onClick={() => onSelect(post)}
+        >
             {/* Left Icon */}
             <div className={`${styles.postIcon} ${post.isInstructor ? styles.instructor : styles.student}`}>
                 {post.isInstructor ? (
