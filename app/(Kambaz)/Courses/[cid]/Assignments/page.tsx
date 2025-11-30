@@ -18,8 +18,11 @@ export default function Assignments() {
     const params = useParams();
     const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
     const [assignmentName, setAssignmentName] = useState("");
+
+    const isFacultyOrAdmin = currentUser && (currentUser.role === "FACULTY" || currentUser.role === "ADMIN");
 
     const fetchAssignments = async () => {
         if (!cid) return;
@@ -54,33 +57,37 @@ export default function Assignments() {
 
     return (
         <div id="wd-assignments">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div className="input-group wd-search-bar">
-                    <span className="input-group-text bg-white border-end-0">
-                        <CiSearch />
-                    </span>
-                    <Form.Control
-                        id="wd-search-assignment"
-                        placeholder="Search..."
-                        className="border-start-0"
-                    />
-                </div>
-                <div>
-                    <Button variant="secondary" className="me-2" id="wd-add-assignment-group">
-                        <FaPlus className="me-1" /> Group
-                    </Button>
-                    <Button variant="danger" id="wd-add-assignment" onClick={onCreateAssignmentForCourse}>
-                        <FaPlus className="me-1" /> Assignment
-                    </Button>
-                </div>
-            </div>
+            {isFacultyOrAdmin && (
+                <>
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div className="input-group wd-search-bar">
+                            <span className="input-group-text bg-white border-end-0">
+                                <CiSearch />
+                            </span>
+                            <Form.Control
+                                id="wd-search-assignment"
+                                placeholder="Search..."
+                                className="border-start-0"
+                            />
+                        </div>
+                        <div>
+                            <Button variant="secondary" className="me-2" id="wd-add-assignment-group">
+                                <FaPlus className="me-1" /> Group
+                            </Button>
+                            <Button variant="danger" id="wd-add-assignment" onClick={onCreateAssignmentForCourse}>
+                                <FaPlus className="me-1" /> Assignment
+                            </Button>
+                        </div>
+                    </div>
 
-            <input
-                className="form-control mb-3 w-50"
-                placeholder="New Assignment Name"
-                value={assignmentName}
-                onChange={(e) => setAssignmentName(e.target.value)}
-            />
+                    <input
+                        className="form-control mb-3 w-50"
+                        placeholder="New Assignment Name"
+                        value={assignmentName}
+                        onChange={(e) => setAssignmentName(e.target.value)}
+                    />
+                </>
+            )}
 
             <div className="wd-assignments-container">
                 <div className="wd-assignments-header d-flex justify-content-between align-items-center p-3">
@@ -90,7 +97,7 @@ export default function Assignments() {
                     </div>
                     <div>
                         <span className="me-3">40% of Total</span>
-                        <FaPlus className="me-2" />
+                        {isFacultyOrAdmin && <FaPlus className="me-2" />}
                         <IoEllipsisVertical />
                     </div>
                 </div>
@@ -111,11 +118,13 @@ export default function Assignments() {
                                     <strong> Due</strong> {assignment.dueDate} at 11:59pm | {assignment.points} pts
                                 </div>
                             </div>
-                            <FaTrash
-                                className="text-danger me-3"
-                                onClick={() => onRemoveAssignment(assignment._id)}
-                                style={{ cursor: 'pointer' }}
-                            />
+                            {isFacultyOrAdmin && (
+                                <FaTrash
+                                    className="text-danger me-3"
+                                    onClick={() => onRemoveAssignment(assignment._id)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            )}
                             <FaCheckCircle className="text-success me-2" />
                             <IoEllipsisVertical />
                         </li>

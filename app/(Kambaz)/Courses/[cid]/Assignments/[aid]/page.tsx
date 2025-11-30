@@ -14,7 +14,10 @@ export default function AssignmentEditor() {
     const router = useRouter();
     const dispatch = useDispatch();
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const assignmentFromStore = assignments.find((a: any) => a._id === aid);
+
+    const isFacultyOrAdmin = currentUser && (currentUser.role === "FACULTY" || currentUser.role === "ADMIN");
 
     const [assignment, setAssignment] = useState(assignmentFromStore || {
         _id: aid,
@@ -40,6 +43,10 @@ export default function AssignmentEditor() {
     };
 
     const handleSave = async () => {
+        if (!isFacultyOrAdmin) {
+            alert("Only faculty and admin can edit assignments");
+            return;
+        }
         await client.updateAssignment(assignment);
         dispatch(updateAssignment(assignment));
         router.push(`/Courses/${cid}/Assignments`);
@@ -72,6 +79,7 @@ export default function AssignmentEditor() {
                         id="wd-name"
                         value={assignment.title}
                         onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}
+                        disabled={!isFacultyOrAdmin}
                     />
                 </Form.Group>
 
@@ -83,6 +91,7 @@ export default function AssignmentEditor() {
                         rows={8}
                         value={assignment.description}
                         onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
+                        disabled={!isFacultyOrAdmin}
                     />
                 </Form.Group>
 
@@ -94,6 +103,7 @@ export default function AssignmentEditor() {
                             type="number"
                             value={assignment.points}
                             onChange={(e) => setAssignment({ ...assignment, points: parseInt(e.target.value) || 0 })}
+                            disabled={!isFacultyOrAdmin}
                         />
                     </Form.Group>
                 </Row>
@@ -105,6 +115,7 @@ export default function AssignmentEditor() {
                             id="wd-group"
                             value={assignment.assignmentGroup}
                             onChange={(e) => setAssignment({ ...assignment, assignmentGroup: e.target.value })}
+                            disabled={!isFacultyOrAdmin}
                         >
                             <option value="ASSIGNMENTS">ASSIGNMENTS</option>
                             <option value="EXAMS">EXAMS</option>
@@ -120,6 +131,7 @@ export default function AssignmentEditor() {
                             id="wd-display-grade-as"
                             value={assignment.displayGradeAs}
                             onChange={(e) => setAssignment({ ...assignment, displayGradeAs: e.target.value })}
+                            disabled={!isFacultyOrAdmin}
                         >
                             <option value="Percentage">Percentage</option>
                             <option value="Points">Points</option>
@@ -135,6 +147,7 @@ export default function AssignmentEditor() {
                                 id="wd-submission-type"
                                 value={assignment.submissionType}
                                 onChange={(e) => setAssignment({ ...assignment, submissionType: e.target.value })}
+                                disabled={!isFacultyOrAdmin}
                             >
                                 <option value="Online">Online</option>
                                 <option value="In-Person">In-Person</option>
@@ -155,6 +168,7 @@ export default function AssignmentEditor() {
                                 ...assignment,
                                 onlineEntryOptions: { ...assignment.onlineEntryOptions, textEntry: e.target.checked }
                             })}
+                            disabled={!isFacultyOrAdmin}
                         />
                         <Form.Check
                             type="checkbox"
@@ -165,6 +179,7 @@ export default function AssignmentEditor() {
                                 ...assignment,
                                 onlineEntryOptions: { ...assignment.onlineEntryOptions, websiteUrl: e.target.checked }
                             })}
+                            disabled={!isFacultyOrAdmin}
                         />
                         <Form.Check
                             type="checkbox"
@@ -175,6 +190,7 @@ export default function AssignmentEditor() {
                                 ...assignment,
                                 onlineEntryOptions: { ...assignment.onlineEntryOptions, mediaRecordings: e.target.checked }
                             })}
+                            disabled={!isFacultyOrAdmin}
                         />
                         <Form.Check
                             type="checkbox"
@@ -185,6 +201,7 @@ export default function AssignmentEditor() {
                                 ...assignment,
                                 onlineEntryOptions: { ...assignment.onlineEntryOptions, studentAnnotation: e.target.checked }
                             })}
+                            disabled={!isFacultyOrAdmin}
                         />
                         <Form.Check
                             type="checkbox"
@@ -195,6 +212,7 @@ export default function AssignmentEditor() {
                                 ...assignment,
                                 onlineEntryOptions: { ...assignment.onlineEntryOptions, fileUploads: e.target.checked }
                             })}
+                            disabled={!isFacultyOrAdmin}
                         />
                     </div>
                 </div>
@@ -207,6 +225,7 @@ export default function AssignmentEditor() {
                             id="wd-assign-to"
                             value={assignment.assignTo || "Everyone"}
                             onChange={(e) => setAssignment({ ...assignment, assignTo: e.target.value })}
+                            disabled={!isFacultyOrAdmin}
                         />
                     </Form.Group>
 
@@ -218,6 +237,7 @@ export default function AssignmentEditor() {
                                 type="datetime-local"
                                 value={formatDateForInput(assignment.dueDate)}
                                 onChange={(e) => setAssignment({ ...assignment, dueDate: extractDateString(e.target.value) })}
+                                disabled={!isFacultyOrAdmin}
                             />
                         </div>
                     </Form.Group>
@@ -232,6 +252,7 @@ export default function AssignmentEditor() {
                                         type="datetime-local"
                                         value={formatDateForInput(assignment.availableDate)}
                                         onChange={(e) => setAssignment({ ...assignment, availableDate: extractDateString(e.target.value) })}
+                                        disabled={!isFacultyOrAdmin}
                                     />
                                 </div>
                             </Form.Group>
@@ -245,6 +266,7 @@ export default function AssignmentEditor() {
                                         type="datetime-local"
                                         value={formatDateForInput(assignment.dueDate)}
                                         onChange={(e) => setAssignment({ ...assignment, dueDate: extractDateString(e.target.value) })}
+                                        disabled={!isFacultyOrAdmin}
                                     />
                                 </div>
                             </Form.Group>
@@ -255,7 +277,9 @@ export default function AssignmentEditor() {
                 <hr />
                 <div className="d-flex justify-content-end gap-2">
                     <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
-                    <Button variant="danger" onClick={handleSave}>Save</Button>
+                    {isFacultyOrAdmin && (
+                        <Button variant="danger" onClick={handleSave}>Save</Button>
+                    )}
                 </div>
             </Form>
         </div>

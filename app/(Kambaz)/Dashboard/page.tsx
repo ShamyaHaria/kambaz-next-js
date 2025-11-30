@@ -21,6 +21,8 @@ export default function Dashboard() {
     });
     const [showAllCourses, setShowAllCourses] = useState(false);
 
+    const isFacultyOrAdmin = currentUser && (currentUser.role === "FACULTY" || currentUser.role === "ADMIN");
+
     const fetchCourses = async () => {
         try {
             let courses;
@@ -121,7 +123,7 @@ export default function Dashboard() {
         <div id="wd-dashboard">
             <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
 
-            {currentUser && (
+            {isFacultyOrAdmin && (
                 <>
                     <Button
                         variant={showAllCourses ? "primary" : "secondary"}
@@ -176,25 +178,29 @@ export default function Dashboard() {
                                             <Button variant="primary">Go</Button>
                                             {currentUser && (
                                                 <div className="d-flex gap-2">
-                                                    <Button
-                                                        id="wd-edit-course-click"
-                                                        variant="secondary"
-                                                        size="sm"
-                                                        onClick={(event) => {
-                                                            event.preventDefault();
-                                                            setCourse(course);
-                                                        }}>Edit
-                                                    </Button>
-                                                    <Button
-                                                        variant="primary"
-                                                        size="sm"
-                                                        onClick={(event) => {
-                                                            event.preventDefault();
-                                                            onDeleteCourse(course._id);
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </Button>
+                                                    {isFacultyOrAdmin && (
+                                                        <>
+                                                            <Button
+                                                                id="wd-edit-course-click"
+                                                                variant="secondary"
+                                                                size="sm"
+                                                                onClick={(event) => {
+                                                                    event.preventDefault();
+                                                                    setCourse(course);
+                                                                }}>Edit
+                                                            </Button>
+                                                            <Button
+                                                                variant="primary"
+                                                                size="sm"
+                                                                onClick={(event) => {
+                                                                    event.preventDefault();
+                                                                    onDeleteCourse(course._id);
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        </>
+                                                    )}
                                                     {isEnrolled(course._id) ? (
                                                         <Button
                                                             variant="danger"
