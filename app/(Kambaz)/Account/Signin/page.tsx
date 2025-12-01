@@ -53,9 +53,6 @@ export default function Signin() {
       <Button onClick={signin} id="wd-signin-btn" className="w-100">
         Sign in
       </Button>
-      <Link id="wd-signup-link" href="/Kambaz/Account/Signup">
-        Sign up
-      </Link>
     </div>
   );
 }

@@ -93,7 +93,7 @@ export default function Dashboard() {
 
     const onUnenroll = async (courseId: string) => {
         try {
-            await coursesClient.unenrollFromCourse(courseId);
+            await coursesClient.unenrollFromCourse(currentUser._id, courseId);
             dispatch(setEnrollments(enrollments.filter((e: any) =>
                 !(e.user === currentUser._id && e.course === courseId)
             )));
@@ -155,13 +155,13 @@ export default function Dashboard() {
             )}
 
             <h2 id="wd-dashboard-published">
-                {currentUser && !showAllCourses ? "Enrolled Courses" : "All Courses"} ({courses.length})
+                {currentUser && !showAllCourses ? "Enrolled Courses" : "All Courses"} ({Array.isArray(courses) ? courses.length : 0})
             </h2>
             <hr />
 
             <div id="wd-dashboard-courses">
                 <Row xs={1} md={5} className="g-4">
-                    {courses.map((course: any) => (
+                    {Array.isArray(courses) && courses.map((course: any) => (
                         <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
                             <Card>
                                 <Link href={`/Courses/${course._id}/Home`}
