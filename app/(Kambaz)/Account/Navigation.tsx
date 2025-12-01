@@ -12,7 +12,9 @@ export default function AccountNavigation() {
     const pathname = usePathname();
 
     return (
-        <div className="wd-account-nav">
+        <Nav variant="pills">
+            {currentUser && currentUser.role === "ADMIN" && (
+                <NavLink as={Link} href={`/Account/Users`} active={pathname.endsWith('Users')}> Users </NavLink>)}
             <Link
                 href="/Account/Signin"
                 className={`wd-account-nav-link ${pathname.endsWith("/Signin") ? "wd-signin-active" : ""}`}>
@@ -28,6 +30,6 @@ export default function AccountNavigation() {
                 className={`wd-account-nav-link ${pathname.endsWith("/Profile") ? "wd-signin-active" : ""}`}>
                 Profile
             </Link>
-        </div>
+        </Nav>
     );
 }
