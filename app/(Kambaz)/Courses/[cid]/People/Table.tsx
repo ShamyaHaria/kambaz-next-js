@@ -8,10 +8,10 @@ import Link from "next/link";
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 
-export default function PeopleTable({ users = [], fetchUsers }: { users?: any[]; fetchUsers: () => void; }) {
+export default function PeopleTable({ fetchUsers }: { users?: any[]; fetchUsers: () => void; }) {
     const [showDetails, setShowDetails] = useState(false);
     const [showUserId, setShowUserId] = useState<string | null>(null);
-    const [, setUsers] = useState<any[]>([]);
+    const [users , setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

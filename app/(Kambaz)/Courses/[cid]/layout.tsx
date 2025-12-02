@@ -1,17 +1,30 @@
 "use client";
 
-import { ReactNode } from "react";
-import { useSelector } from "react-redux";
+import { ReactNode, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams, usePathname } from "next/navigation";
 import CourseNavigation from "./Navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
+import * as courseClient from "../client";
+import { setCourses } from "../reducer";
 
 export default function CoursesLayout({ children }: { children: ReactNode }) {
     const params = useParams();
     const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const pathname = usePathname();
+    const dispatch = useDispatch();
     const { courses } = useSelector((state: any) => state.coursesReducer);
     const course = courses.find((course: any) => course._id === cid);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            if (courses.length === 0) {
+                const allCourses = await courseClient.fetchAllCourses();
+                dispatch(setCourses(allCourses));
+            }
+        };
+        fetchCourses();
+    }, [courses.length, dispatch]);
 
     const paths = pathname.split("/");
     let currentSection = paths[paths.length - 1];
@@ -23,7 +36,7 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
         <div id="wd-courses">
             <h2 className="text-danger">
                 <GiHamburgerMenu className="me-4 fs-4 mb-1" />
-                {course && `${course.number} ${course.name}`} &gt; {currentSection}
+                {course ? course.number : cid} &gt; {currentSection}
             </h2>
             <div className="d-flex">
                 <div className="d-none d-md-block">
