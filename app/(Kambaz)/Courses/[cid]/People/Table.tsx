@@ -8,15 +8,26 @@ import PeopleDetails from "./Details";
 
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 
-export default function PeopleTable({ fetchUsers }: { fetchUsers: () => void; }) {
+export default function PeopleTable({
+    fetchUsers,
+    users: propUsers
+}: {
+    fetchUsers: () => void;
+    users?: any[];
+}) {
     const params = useParams();
     const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const [showDetails, setShowDetails] = useState(false);
     const [showUserId, setShowUserId] = useState<string | null>(null);
-    const [users, setUsers] = useState<any[]>([]);
+    const [fetchedUsers, setFetchedUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (propUsers) {
+            setLoading(false);
+            return;
+        }
+
         const fetchData = async () => {
             try {
                 const [usersResponse, enrollmentsResponse] = await Promise.all([
@@ -34,7 +45,7 @@ export default function PeopleTable({ fetchUsers }: { fetchUsers: () => void; })
                     )
                 );
 
-                setUsers(enrolledUsers);
+                setFetchedUsers(enrolledUsers);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -43,7 +54,9 @@ export default function PeopleTable({ fetchUsers }: { fetchUsers: () => void; })
         };
 
         fetchData();
-    }, [cid]);
+    }, [cid, propUsers]);
+
+    const users = propUsers || fetchedUsers;
 
     if (loading) {
         return <div>Loading...</div>;

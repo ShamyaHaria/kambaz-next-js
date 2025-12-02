@@ -65,7 +65,7 @@ export default function Users() {
                 <option value="FACULTY">Faculty</option>
                 <option value="ADMIN">Administrators</option>
             </select>
-            <PeopleTable fetchUsers={fetchUsers} />
+            <PeopleTable users={users} fetchUsers={fetchUsers} />
         </div>
     );
 }
