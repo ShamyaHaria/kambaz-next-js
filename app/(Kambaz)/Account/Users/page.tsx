@@ -5,10 +5,12 @@ import PeopleTable from "../../Courses/[cid]/People/Table";
 import * as client from "../client";
 import FormControl from "react-bootstrap/esm/FormControl";
 import { FaPlus } from "react-icons/fa6";
+
 export default function Users() {
     const [users, setUsers] = useState<any[]>([]);
     const [role, setRole] = useState("");
     const [name, setName] = useState("");
+
     const filterUsersByName = async (name: string) => {
         setName(name);
         if (name) {
@@ -18,6 +20,7 @@ export default function Users() {
             fetchUsers();
         }
     };
+
     const filterUsersByRole = async (role: string) => {
         setRole(role);
         if (role) {
@@ -27,15 +30,37 @@ export default function Users() {
             fetchUsers();
         }
     };
+
     const { uid } = useParams();
+
     const fetchUsers = async () => {
         const users = await client.findAllUsers();
         setUsers(users);
     };
+
     useEffect(() => {
         fetchUsers();
     }, [uid]);
+
+    const generateLoginId = () => {
+        let maxNumber = 0;
+        users.forEach((user) => {
+            if (user.loginId) {
+                const match = user.loginId.match(/^(\d+)S$/);
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (num > maxNumber) {
+                        maxNumber = num;
+                    }
+                }
+            }
+        });
+        const newNumber = (maxNumber + 1).toString().padStart(9, '0');
+        return `${newNumber}S`;
+    };
+
     const createUser = async () => {
+        const loginId = generateLoginId();
         const user = await client.createUser({
             firstName: "New",
             lastName: `User${users.length + 1}`,
@@ -44,6 +69,8 @@ export default function Users() {
             email: `email${users.length + 1}@neu.edu`,
             section: "S101",
             role: "STUDENT",
+            loginId: loginId,
+            totalActivity: "00:00:00",
         });
         setUsers([...users, user]);
     };
