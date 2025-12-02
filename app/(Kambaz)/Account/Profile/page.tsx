@@ -33,6 +33,12 @@ export default function Profile() {
         dispatch(setCurrentUser(updatedProfile));
     };
 
+    const formatDateForInput = (dateString: string) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    };
+
     return (
         <div id="wd-profile-screen" className="wd-account-form">
             <h3>Profile</h3>
@@ -59,7 +65,7 @@ export default function Profile() {
                             ...profile, lastName: e.target.value
                         })} />
                     <FormControl id="wd-dob" className="mb-2" type="date"
-                        value={profile.dob}
+                        value={formatDateForInput(profile.dob)}
                         onChange={(e) => setProfile({
                             ...profile, dob: e.target.value
                         })} />

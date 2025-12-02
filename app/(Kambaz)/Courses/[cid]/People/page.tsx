@@ -8,7 +8,7 @@ export default function People() {
 
     return (
         <div>
-            <PeopleTable users={[]} fetchUsers={fetchUsers} />
+            <PeopleTable fetchUsers={fetchUsers} />
         </div>
     );
 }
