@@ -11,9 +11,10 @@ interface PazzaHeaderProps {
     onShowSetup: () => void;
     onLogout: () => void;
     activePage?: 'Q&A' | 'Resources' | 'Statistics';
+    onPageChange?: (page: 'Q&A' | 'Resources' | 'Statistics') => void;
 }
 
-export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout, activePage = 'Q&A' }: PazzaHeaderProps) {
+export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout, activePage = 'Q&A', onPageChange }: PazzaHeaderProps) {
     const [showCourseDropdown, setShowCourseDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -144,24 +145,24 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                 </div>
 
                 <div className={styles.headerCenter}>
-                    <a
-                        href={`/Courses/${courseId}/Pazza`}
+                    <button 
+                        onClick={() => onPageChange?.('Q&A')}
                         className={`${styles.navLink} ${activePage === 'Q&A' ? styles.navLinkActive : ''}`}
                     >
                         Q & A
-                    </a>
-                    <a
-                        href={`/Courses/${courseId}/Pazza/Resources`}
+                    </button>
+                    <button 
+                        onClick={() => onPageChange?.('Resources')}
                         className={`${styles.navLink} ${activePage === 'Resources' ? styles.navLinkActive : ''}`}
                     >
                         Resources
-                    </a>
-                    <a
-                        href="#"
+                    </button>
+                    <button 
+                        onClick={() => onPageChange?.('Statistics')}
                         className={`${styles.navLink} ${activePage === 'Statistics' ? styles.navLinkActive : ''}`}
                     >
                         Statistics
-                    </a>
+                    </button>
                 </div>
 
                 <div className={styles.headerRight}>

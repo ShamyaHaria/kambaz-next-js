@@ -11,6 +11,7 @@ import PostsList from './PostsList';
 import NewPostModal from './NewPostModal';
 import PostDetailView from './PostDetailView';
 import PiazzaSetupView from './PiazzaSetupView';
+import ResourcesView from './ResourcesView';
 
 export default function PazzaPage() {
     const params = useParams();
@@ -21,11 +22,14 @@ export default function PazzaPage() {
     const [showNewPostModal, setShowNewPostModal] = useState(false);
     const [showPinnedOnly, setShowPinnedOnly] = useState(false);
     const [showSetup, setShowSetup] = useState(false);
+    const [activePage, setActivePage] = useState<'Q&A' | 'Resources' | 'Statistics'>('Q&A');
 
     useEffect(() => {
-        fetchPosts();
-        fetchStats();
-    }, [courseId, selectedTags, showPinnedOnly]);
+        if (activePage === 'Q&A') {
+            fetchPosts();
+            fetchStats();
+        }
+    }, [courseId, selectedTags, showPinnedOnly, activePage]);
 
     const fetchPosts = async () => {
         try {
@@ -38,7 +42,7 @@ export default function PazzaPage() {
             dispatch(setPosts(response.data));
         } catch (error) {
             console.error('Error fetching posts:', error);
-            dispatch(setPosts([])); // Set empty array on error
+            dispatch(setPosts([]));
         } finally {
             dispatch(setLoading(false));
         }
@@ -63,12 +67,11 @@ export default function PazzaPage() {
 
     const handlePostSelect = async (post: any) => {
         try {
-            // Increment view count
             await pazzaAPI.incrementView(post._id);
             dispatch(setCurrentPost(post));
         } catch (error) {
             console.error('Error selecting post:', error);
-            dispatch(setCurrentPost(post)); // Still show the post even if view increment fails
+            dispatch(setCurrentPost(post));
         }
     };
 
@@ -101,40 +104,55 @@ export default function PazzaPage() {
                 onNewPost={() => setShowNewPostModal(true)}
                 onShowSetup={() => setShowSetup(true)}
                 onLogout={() => setShowSetup(true)}
-                activePage="Q&A"
+                activePage={activePage}
+                onPageChange={setActivePage}
             />
 
-            <div className="max-w-full px-6 py-6">
-                {/* Two Column Layout */}
-                <div style={{ display: 'grid', gridTemplateColumns: '350px 1fr', gap: '1.5rem', maxWidth: '100%' }}>
-                    {/* Left Column - Posts List */}
-                    <div className="bg-white rounded-lg shadow-md border border-gray-200">
-                        <PostsList
-                            posts={filteredPosts}
-                            loading={loading}
-                            showPinnedOnly={showPinnedOnly}
-                            onTogglePinned={() => setShowPinnedOnly(!showPinnedOnly)}
-                            selectedTags={selectedTags}
-                            onTagSelect={handleTagSelect}
-                            onPostSelect={handlePostSelect}
-                            selectedPostId={currentPost?._id}
-                        />
-                    </div>
-
-                    {/* Right Column - Class at a Glance OR Post Detail */}
-                    <div>
-                        {currentPost ? (
-                            <PostDetailView
-                                post={currentPost}
-                                onClose={() => dispatch(setCurrentPost(null))}
-                                onUpdate={fetchPosts}
+            {/* Q&A View */}
+            {activePage === 'Q&A' && (
+                <div className="max-w-full px-6 py-6">
+                    <div style={{ display: 'grid', gridTemplateColumns: '350px 1fr', gap: '1.5rem', maxWidth: '100%' }}>
+                        <div className="bg-white rounded-lg shadow-md border border-gray-200">
+                            <PostsList
+                                posts={filteredPosts}
+                                loading={loading}
+                                showPinnedOnly={showPinnedOnly}
+                                onTogglePinned={() => setShowPinnedOnly(!showPinnedOnly)}
+                                selectedTags={selectedTags}
+                                onTagSelect={handleTagSelect}
+                                onPostSelect={handlePostSelect}
+                                selectedPostId={currentPost?._id}
                             />
-                        ) : (
-                            <ClassAtGlance stats={stats} />
-                        )}
+                        </div>
+
+                        <div>
+                            {currentPost ? (
+                                <PostDetailView
+                                    post={currentPost}
+                                    onClose={() => dispatch(setCurrentPost(null))}
+                                    onUpdate={fetchPosts}
+                                />
+                            ) : (
+                                <ClassAtGlance stats={stats} />
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
+
+            {/* Resources View */}
+            {activePage === 'Resources' && (
+                <ResourcesView courseId={courseId} />
+            )}
+
+            {/* Statistics View - Placeholder */}
+            {activePage === 'Statistics' && (
+                <div className="max-w-full px-6 py-6">
+                    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-12 text-center">
+                        <p className="text-gray-500 text-lg">Statistics page coming soon...</p>
+                    </div>
+                </div>
+            )}
 
             {showNewPostModal && (
                 <NewPostModal

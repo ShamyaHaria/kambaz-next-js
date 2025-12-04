@@ -485,20 +485,24 @@
 
 .navLink {
     color: white;
-    text-decoration: none;
     font-size: 14px;
-    font-weight: 500;
-    transition: opacity 0.2s;
+    font-weight: 600;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    font-family: inherit;
+    position: relative;
 }
 
 .navLink:hover {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .navLinkActive {
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    border-bottom: 3px solid white;
 }
 
 .headerRight {
