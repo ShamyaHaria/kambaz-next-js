@@ -32,13 +32,18 @@ export default function Modules() {
         fetchModules();
     }, [cid]);
 
-    const onCreateModuleForCourse = async () => {
+    const onCreateModuleForCourse = async (lessons: any[] = []) => {
         if (!cid || !moduleName.trim()) return;
-        const newModule = { name: moduleName, course: cid };
+        const newModule = {
+            name: moduleName,
+            course: cid,
+            lessons: lessons
+        };
         const module = await client.createModuleForCourse(cid, newModule);
         dispatch(setModules([...modules, module]));
         setModuleName("");
     };
+
 
     const onRemoveModule = async (moduleId: string) => {
         await client.deleteModule(moduleId);
