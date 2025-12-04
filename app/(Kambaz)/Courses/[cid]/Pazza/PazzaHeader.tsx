@@ -10,9 +10,10 @@ interface PazzaHeaderProps {
     onNewPost: () => void;
     onShowSetup: () => void;
     onLogout: () => void;
+    activePage?: 'Q&A' | 'Resources' | 'Statistics';
 }
 
-export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout }: PazzaHeaderProps) {
+export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout, activePage = 'Q&A' }: PazzaHeaderProps) {
     const [showCourseDropdown, setShowCourseDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -143,9 +144,24 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                 </div>
 
                 <div className={styles.headerCenter}>
-                    <a href="#" className={`${styles.navLink} ${styles.navLinkActive}`}>Q & A</a>
-                    <a href="#" className={styles.navLink}>Resources</a>
-                    <a href="#" className={styles.navLink}>Statistics</a>
+                    <a
+                        href={`/Courses/${courseId}/Pazza`}
+                        className={`${styles.navLink} ${activePage === 'Q&A' ? styles.navLinkActive : ''}`}
+                    >
+                        Q & A
+                    </a>
+                    <a
+                        href={`/Courses/${courseId}/Pazza/Resources`}
+                        className={`${styles.navLink} ${activePage === 'Resources' ? styles.navLinkActive : ''}`}
+                    >
+                        Resources
+                    </a>
+                    <a
+                        href="#"
+                        className={`${styles.navLink} ${activePage === 'Statistics' ? styles.navLinkActive : ''}`}
+                    >
+                        Statistics
+                    </a>
                 </div>
 
                 <div className={styles.headerRight}>
@@ -215,7 +231,10 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
 
                                 <button
                                     className={styles.userDropdownItemBlue}
-                                    onClick={onLogout}>
+                                    onClick={() => {
+                                        setShowUserDropdown(false);
+                                        onLogout();
+                                    }}>
                                     <span className={styles.userDropdownIcon}>↪</span>
                                     <span>Log Out</span>
                                 </button>
