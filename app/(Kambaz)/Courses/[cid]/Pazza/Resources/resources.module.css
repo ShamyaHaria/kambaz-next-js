@@ -1,0 +1,559 @@
+.resourcesPage {
+    min-height: 100vh;
+    background: white;
+}
+
+.courseHeader {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 32px;
+}
+
+.courseTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.courseSubtitle {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.tabsContainer {
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.tabsWrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+}
+
+.tab {
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: none;
+    margin-bottom: -1px;
+}
+
+.tab:first-child {
+    border-radius: 4px 0 0 0;
+}
+
+.tab:not(:first-child) {
+    border-left: none;
+}
+
+.tab:hover {
+    background: #e5e7eb;
+}
+
+.tabActive {
+    background: white;
+    color: #2563eb;
+    border-bottom: 1px solid white;
+    position: relative;
+    z-index: 1;
+}
+
+.contentWrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+.sectionTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 24px;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+}
+
+.emptyIcon {
+    width: 80px;
+    height: 80px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.emptyText {
+    font-size: 16px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+/* Staff Card Styles */
+.staffList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.staffCard {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+}
+
+.staffAvatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.staffAvatarIcon {
+    width: 32px;
+    height: 32px;
+    color: #9ca3af;
+}
+
+.staffInfo {
+    flex: 1;
+}
+
+.staffName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.staffDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.staffDetail {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.staffDetailIcon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    color: #9ca3af;
+}
+
+.resourcesGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalBox {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 600px;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modalTitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.modalClose {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.modalClose:hover {
+    color: #111827;
+}
+
+.modalBody {
+    padding: 24px;
+}
+
+.modalTextarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.modalTextarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modalInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.modalInput:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.modalButtonCancel {
+    padding: 10px 20px;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modalButtonCancel:hover {
+    background: #f9fafb;
+    color: #374151;
+}
+
+.modalButtonSave {
+    padding: 10px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modalButtonSave:hover {
+    background: #1d4ed8;
+}
+
+.modalButtonSave:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Add Button Styles */
+.addButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    transition: all 0.2s;
+}
+
+.addButton:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+}
+
+.addButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modalBox {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modalTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.modalClose {
+    background: #f3f4f6;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 8px;
+    transition: all 0.2s;
+}
+
+.modalClose:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.modalBody {
+    padding: 24px;
+}
+
+.modalTextarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s;
+}
+
+.modalTextarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.modalInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.modalInput:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 12px 12px;
+}
+
+.modalButtonCancel {
+    padding: 10px 24px;
+    background: white;
+    color: #374151;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modalButtonCancel:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+.modalButtonSave {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s;
+}
+
+.modalButtonSave:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
+
+.modalButtonSave:active {
+    transform: translateY(0);
+}
+
+.modalButtonSave:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Edit Office Hours Button */
+.editOfficeHoursButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.editOfficeHoursButton:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+.editOfficeHoursButton:active {
+    transform: translateY(0);
+}
+
+/* Upload Area */
+.uploadArea {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.uploadArea:hover {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+}
+
+.uploadIcon {
+    margin: 0 auto 12px;
+    color: #9ca3af;
+}
+
+.uploadText {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.uploadSubtext {
+    font-size: 12px;
+    color: #9ca3af;
+}

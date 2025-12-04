@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { X, ChevronDown } from 'lucide-react';
-import { useDispatch } from 'react-redux';
-import { addPost } from './pazzaSlice';
 import { pazzaAPI } from './client';
 import styles from './pazza.module.css';
 
@@ -14,7 +12,6 @@ interface NewPostModalProps {
 }
 
 export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostModalProps) {
-    const dispatch = useDispatch();
     const [category, setCategory] = useState('Concept');
     const [postTo, setPostTo] = useState('Entire Class');
     const [selectedFolder, setSelectedFolder] = useState('hw1');
@@ -40,17 +37,15 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
         setError('');
 
         try {
-            const response = await pazzaAPI.createPost(courseId, {
+            await pazzaAPI.createPost(courseId, {
                 title: subject.trim(),
                 content: content.trim(),
                 tags: [selectedFolder],
             });
 
-            dispatch(addPost(response.data));
             onSuccess();
-            onClose();
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to create post');
+            setError(err.response?.data?.error || 'Failed to create post');
         } finally {
             setLoading(false);
         }

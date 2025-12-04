@@ -9,7 +9,7 @@ const pazzaClient = axios.create({
 
 export const pazzaAPI = {
     // Posts
-    getPosts: (courseId: string, filters?: { tags?: string[]; pinned?: boolean }) =>
+    getPosts: (courseId: string, filters?: { tags?: string; pinned?: boolean }) =>
         pazzaClient.get(`/courses/${courseId}/posts`, { params: filters }),
 
     getPost: (postId: string) =>
@@ -26,6 +26,9 @@ export const pazzaAPI = {
 
     togglePin: (postId: string) =>
         pazzaClient.patch(`/posts/${postId}/pin`),
+
+    incrementView: (postId: string) =>
+        pazzaClient.post(`/posts/${postId}/view`),
 
     // Interactions
     likePost: (postId: string) =>

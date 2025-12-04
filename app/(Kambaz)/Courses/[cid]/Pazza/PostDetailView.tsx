@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { pazzaAPI } from './client';
 
 interface Post {
     _id: string;
@@ -26,14 +27,16 @@ interface Post {
 interface PostDetailViewProps {
     post: Post;
     onClose: () => void;
+    onUpdate?: () => void;
 }
 
-export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
+export default function PostDetailView({ post, onClose, onUpdate }: PostDetailViewProps) {
     const [liked, setLiked] = useState(false);
     const [bookmarked, setBookmarked] = useState(post.bookmarked);
     const [starred, setStarred] = useState(post.starred);
     const [showFollowUpForm, setShowFollowUpForm] = useState(false);
     const [followUpContent, setFollowUpContent] = useState('');
+    const [followUpLoading, setFollowUpLoading] = useState(false);
 
     const getTimeAgo = (date: string) => {
         try {
@@ -55,6 +58,62 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
         alert('Link copied to clipboard!');
+    };
+
+    const handleLike = async () => {
+        try {
+            await pazzaAPI.likePost(post._id);
+            setLiked(!liked);
+        } catch (error) {
+            console.error('Error liking post:', error);
+        }
+    };
+
+    const handleBookmark = async () => {
+        try {
+            await pazzaAPI.bookmarkPost(post._id);
+            setBookmarked(!bookmarked);
+        } catch (error) {
+            console.error('Error bookmarking post:', error);
+        }
+    };
+
+    const handleStar = async () => {
+        try {
+            await pazzaAPI.starPost(post._id);
+            setStarred(!starred);
+        } catch (error) {
+            console.error('Error starring post:', error);
+        }
+    };
+
+    const handlePostFollowUp = async () => {
+        if (!followUpContent.trim()) return;
+
+        setFollowUpLoading(true);
+        try {
+            await pazzaAPI.createFollowUp(post._id, {
+                content: followUpContent.trim(),
+                isAnswer: false,
+            });
+            setFollowUpContent('');
+            setShowFollowUpForm(false);
+            if (onUpdate) onUpdate();
+        } catch (error) {
+            console.error('Error posting followup:', error);
+            alert('Failed to post followup');
+        } finally {
+            setFollowUpLoading(false);
+        }
+    };
+
+    const handleLikeFollowUp = async (followupId: string) => {
+        try {
+            await pazzaAPI.likeFollowUp(post._id, followupId);
+            if (onUpdate) onUpdate();
+        } catch (error) {
+            console.error('Error liking followup:', error);
+        }
     };
 
     return (
@@ -130,10 +189,10 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-3 pb-6 border-b border-gray-200">
                     <button
-                        onClick={() => setLiked(!liked)}
+                        onClick={handleLike}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${liked
-                                ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                     >
                         <ThumbsUp size={18} fill={liked ? 'currentColor' : 'none'} />
@@ -141,10 +200,10 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
                     </button>
 
                     <button
-                        onClick={() => setBookmarked(!bookmarked)}
+                        onClick={handleBookmark}
                         className={`p-2.5 rounded-lg transition-all ${bookmarked
-                                ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                         title="Bookmark"
                     >
@@ -152,10 +211,10 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
                     </button>
 
                     <button
-                        onClick={() => setStarred(!starred)}
+                        onClick={handleStar}
                         className={`p-2.5 rounded-lg transition-all ${starred
-                                ? 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'bg-orange-100 text-orange-600 hover:bg-orange-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                         title="Star"
                     >
@@ -198,13 +257,19 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
                         />
                         <div className="mt-3 flex justify-end space-x-3">
                             <button
+                                type="button"
                                 onClick={() => setShowFollowUpForm(false)}
                                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all font-medium"
                             >
                                 Cancel
                             </button>
-                            <button className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm font-medium">
-                                Post Followup
+                            <button
+                                type="button"
+                                onClick={handlePostFollowUp}
+                                disabled={followUpLoading || !followUpContent.trim()}
+                                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {followUpLoading ? 'Posting...' : 'Post Followup'}
                             </button>
                         </div>
                     </div>
@@ -218,7 +283,7 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {post.followups.map((followup: any, index: number) => {
+                        {post.followups.map((followup: any) => {
                             const roleBadge = getRoleBadge(followup.author.role);
                             return (
                                 <div
@@ -264,7 +329,10 @@ export default function PostDetailView({ post, onClose }: PostDetailViewProps) {
 
                                     {/* Followup Actions */}
                                     <div className="flex items-center space-x-4 pl-12">
-                                        <button className="flex items-center space-x-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+                                        <button
+                                            onClick={() => handleLikeFollowUp(followup._id)}
+                                            className="flex items-center space-x-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                                        >
                                             <ThumbsUp size={14} />
                                             <span className="font-medium">{followup.likes}</span>
                                         </button>
