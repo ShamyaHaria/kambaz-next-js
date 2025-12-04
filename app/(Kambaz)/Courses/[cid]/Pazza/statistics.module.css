@@ -1,0 +1,229 @@
+.statisticsPage {
+    background: white;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+.pageTitle {
+    font-size: 36px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 32px;
+}
+
+.section {
+    margin-bottom: 48px;
+}
+
+.sectionTitle {
+    font-size: 32px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.chartTabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border: none;
+}
+
+.chartTab {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chartTab:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.chartTabActive {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.chartContainer {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.emptyChart {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emptyChartText {
+    font-size: 18px;
+    color: #333;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.statsCard {
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.statsCardTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.statRow {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.statNumber {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    min-width: 100px;
+}
+
+.statLabel {
+    font-size: 15px;
+    color: #666;
+}
+
+.contributorsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contributorItem {
+    margin-bottom: 16px;
+}
+
+.contributorName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.contributorStats {
+    font-size: 13px;
+    color: #666;
+    margin-left: 20px;
+}
+
+.footnotes {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.footnotes p {
+    margin-bottom: 4px;
+}
+
+.tableContainer {
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tableHeader {
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tableTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+    text-align: left;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.table th.sortable {
+    cursor: pointer;
+}
+
+.table th.sortable:hover {
+    background: #f3f4f6;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.table td {
+    padding: 16px 24px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.studentName {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 2px;
+}
+
+.studentEmail {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.emptyTable {
+    text-align: center;
+    padding: 48px 24px;
+    color: #9ca3af;
+}

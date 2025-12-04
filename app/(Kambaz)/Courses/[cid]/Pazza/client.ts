@@ -15,7 +15,7 @@ export const pazzaAPI = {
     getPost: (postId: string) =>
         pazzaClient.get(`/posts/${postId}`),
 
-    createPost: (courseId: string, data: { title: string; content: string; tags: string[] }) =>
+    createPost: (courseId: string, data: { title: string; content: string; tags: string[]; category?: string }) =>
         pazzaClient.post(`/courses/${courseId}/posts`, data),
 
     updatePost: (postId: string, data: { title?: string; content?: string; tags?: string[] }) =>

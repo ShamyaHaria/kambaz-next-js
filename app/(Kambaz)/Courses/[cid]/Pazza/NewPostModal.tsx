@@ -41,7 +41,8 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                 title: subject.trim(),
                 content: content.trim(),
                 tags: [selectedFolder],
-            });
+                category: category,
+            } as any);
 
             onSuccess();
         } catch (err: any) {

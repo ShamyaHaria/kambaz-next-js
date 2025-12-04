@@ -12,6 +12,7 @@ import NewPostModal from './NewPostModal';
 import PostDetailView from './PostDetailView';
 import PiazzaSetupView from './PiazzaSetupView';
 import ResourcesView from './ResourcesView';
+import StatisticsView from './StatisticsView';
 
 export default function PazzaPage() {
     const params = useParams();
@@ -88,6 +89,15 @@ export default function PazzaPage() {
         return true;
     });
 
+    const handleTagClick = (tag: string) => {
+        setActivePage('Q&A');
+        if (selectedTags.includes(tag)) {
+            dispatch(setSelectedTags(selectedTags.filter((t: string) => t !== tag)));
+        } else {
+            dispatch(setSelectedTags([tag]));
+        }
+    };
+
     // If showing setup view
     if (showSetup) {
         return (
@@ -106,6 +116,7 @@ export default function PazzaPage() {
                 onLogout={() => setShowSetup(true)}
                 activePage={activePage}
                 onPageChange={setActivePage}
+                onTagClick={handleTagClick} 
             />
 
             {/* Q&A View */}
@@ -145,13 +156,9 @@ export default function PazzaPage() {
                 <ResourcesView courseId={courseId} />
             )}
 
-            {/* Statistics View - Placeholder */}
+            {/* Statistics View */}
             {activePage === 'Statistics' && (
-                <div className="max-w-full px-6 py-6">
-                    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-12 text-center">
-                        <p className="text-gray-500 text-lg">Statistics page coming soon...</p>
-                    </div>
-                </div>
+                <StatisticsView courseId={courseId} />
             )}
 
             {showNewPostModal && (

@@ -12,11 +12,13 @@ interface PazzaHeaderProps {
     onLogout: () => void;
     activePage?: 'Q&A' | 'Resources' | 'Statistics';
     onPageChange?: (page: 'Q&A' | 'Resources' | 'Statistics') => void;
+    onTagClick?: (tag: string) => void;
 }
 
-export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout, activePage = 'Q&A', onPageChange }: PazzaHeaderProps) {
+export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout, activePage = 'Q&A', onPageChange, onTagClick }: PazzaHeaderProps) {
     const [showCourseDropdown, setShowCourseDropdown] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const [tagCounts, setTagCounts] = useState<any>({});
 
     // Get courses and user from Redux
     const courses = useSelector((state: any) => state.coursesReducer.courses);
@@ -30,7 +32,6 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
         window.location.href = `/Courses/${newCourseId}/Pazza`;
     };
 
-    // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
@@ -63,6 +64,30 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
         return `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.username || 'User';
     };
 
+    useEffect(() => {
+        fetchTagCounts();
+    }, [courseId]);
+
+    const fetchTagCounts = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api'}/pazza/courses/${courseId}/tag-counts`, {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                console.error('Failed to fetch tag counts');
+                setTagCounts({});
+                return;
+            }
+
+            const data = await response.json();
+            setTagCounts(data || {});
+        } catch (error) {
+            console.error('Error fetching tag counts:', error);
+            setTagCounts({});
+        }
+    };
+
     return (
         <div className={styles.header}>
             <div className={styles.headerTop}>
@@ -78,7 +103,6 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                             <span className={styles.courseName}>
                                 {currentCourse?.name || currentCourse?.number || 'Select Course'}
                             </span>
-                            <span className={styles.courseNumber}>47</span>
                             <ChevronDown size={18} className={styles.dropdownIcon} />
                         </button>
 
@@ -108,9 +132,7 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                                                 </div>
                                             )}
                                         </div>
-                                        <span className={styles.courseDropdownItemCount}>
-                                            {course._id === courseId ? '47' : '0'}
-                                        </span>
+                                        <span className={styles.courseDropdownItemCount}>0</span>
                                     </button>
                                 ))}
 
@@ -145,19 +167,19 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                 </div>
 
                 <div className={styles.headerCenter}>
-                    <button 
+                    <button
                         onClick={() => onPageChange?.('Q&A')}
                         className={`${styles.navLink} ${activePage === 'Q&A' ? styles.navLinkActive : ''}`}
                     >
                         Q & A
                     </button>
-                    <button 
+                    <button
                         onClick={() => onPageChange?.('Resources')}
                         className={`${styles.navLink} ${activePage === 'Resources' ? styles.navLinkActive : ''}`}
                     >
                         Resources
                     </button>
-                    <button 
+                    <button
                         onClick={() => onPageChange?.('Statistics')}
                         className={`${styles.navLink} ${activePage === 'Statistics' ? styles.navLinkActive : ''}`}
                     >
@@ -261,16 +283,16 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                 </div>
 
                 <div className={styles.tagsList}>
-                    <button className={styles.tagButton}>hw1 <span className={styles.tagCount}>15</span></button>
-                    <button className={styles.tagButton}>hw2 <span className={styles.tagCount}>38</span></button>
-                    <button className={styles.tagButton}>hw3 <span className={styles.tagCount}>49</span></button>
-                    <button className={styles.tagButton}>hw4 <span className={styles.tagCount}>77</span></button>
-                    <button className={styles.tagButton}>hw5 <span className={styles.tagCount}>46</span></button>
-                    <button className={styles.tagButton}>hw6 <span className={styles.tagCount}>35</span></button>
-                    <button className={styles.tagButton}>hw7 <span className={styles.tagCount}>4</span></button>
-                    <button className={styles.tagButton}>labs <span className={styles.tagCount}>26</span></button>
-                    <button className={styles.tagButton}>code_walks <span className={styles.tagCount}>11</span></button>
-                    <button className={styles.tagButton}>logistics <span className={styles.tagCount}>53</span></button>
+                    {['hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6', 'hw7', 'labs', 'code_walks', 'logistics'].map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => onTagClick?.(tag)}
+                            className={styles.tagButton}
+                        >
+                            {tag}
+                            {tagCounts[tag] > 0 && <span className={styles.tagCount}>{tagCounts[tag]}</span>}
+                        </button>
+                    ))}
                 </div>
             </div>
         </div>
