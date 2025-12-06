@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { v4 as uuidv4 } from "uuid";
 import * as client from "../../client";
 import { useState, useEffect } from 'react';
 import '../../../styles.css';
@@ -32,26 +31,30 @@ export default function Modules() {
         fetchModules();
     }, [cid]);
 
-    const onCreateModuleForCourse = async (lessons: any[] = []) => {
-        if (!cid || !moduleName.trim()) return;
-        const newModule = { name: moduleName, course: cid, lessons: lessons };
-        const module = await client.createModuleForCourse(cid, newModule);
-        dispatch(setModules([...modules, module]));
-        setModuleName("");
+const onCreateModuleForCourse = async (lessons: any[] = []) => {
+    if (!cid || !moduleName.trim()) return;
+    const newModule = { 
+        name: moduleName,
+        lessons: lessons,
+        course: cid
     };
+    const module = await client.createModuleForCourse(cid, newModule);
+    dispatch(setModules([...modules, module]));
+    setModuleName("");
+};
 
     const onRemoveModule = async (moduleId: string) => {
         if (!cid) return;
         await client.deleteModule(cid, moduleId);
-        const newModules = modules.filter((m: any) => m._id !== moduleId)
+        const newModules = modules.filter((m: any) => m._id !== moduleId);
         dispatch(setModules(newModules));
     };
 
-    const onUpdateModule = async (module: any) => {
+    const onUpdateModule = async (moduleId: string, updates: any) => {
         if (!cid) return;
-        await client.updateModule(cid, module);
+        await client.updateModule(cid, moduleId, updates);
         const newModules = modules.map(
-            (m: any) => m._id === module._id ? module : m);
+            (m: any) => m._id === moduleId ? { ...m, ...updates } : m);
         dispatch(setModules(newModules));
     };
 
@@ -69,10 +72,10 @@ export default function Modules() {
                             {!module.editing && module.name}
                             {module.editing && isFacultyOrAdmin && (
                                 <FormControl className="w-50 d-inline-block"
-                                    onChange={(e) => onUpdateModule({ ...module, name: e.target.value })}
+                                    onChange={(e) => onUpdateModule(module._id, { name: e.target.value })}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
-                                            onUpdateModule({ ...module, editing: false });
+                                            onUpdateModule(module._id, { editing: false });
                                         }
                                     }}
                                     defaultValue={module.name} />
@@ -94,6 +97,6 @@ export default function Modules() {
                     </ListGroupItem>
                 )}
             </ListGroup>
-        </div >
+        </div>
     );
 }

@@ -56,12 +56,13 @@ export const deleteModule =
     return response.data;
   }
 
-export const updateModule = async (courseId: string, module: any) => {
-  const { data } = await axios.put(
-    `${COURSES_API}/${courseId}/modules/${module._id}`,
-    module);
-  return data;
-};
+export async function updateModule(courseId: string, moduleId: string, updates: any) {
+    const response = await axios.put(
+        `${COURSES_API}/${courseId}/modules/${moduleId}`,
+        updates
+    );
+    return response.data;
+}
 
 export const findAssignmentsForCourse = async (courseId: string) => {
   const response = await axios
