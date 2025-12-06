@@ -38,6 +38,13 @@ export default function AssignmentEditor() {
         }
     });
 
+
+    useEffect(() => {
+        if (assignmentFromStore) {
+            setAssignment(assignmentFromStore);
+        }
+    }, [assignmentFromStore]);
+
     const handleCancel = () => {
         router.push(`/Courses/${cid}/Assignments`);
     };

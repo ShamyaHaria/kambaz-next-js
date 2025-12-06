@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { BsGripVertical } from 'react-icons/bs';
@@ -16,6 +16,7 @@ import * as client from '../../client';
 
 export default function Assignments() {
     const params = useParams();
+    const router = useRouter();
     const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -32,12 +33,12 @@ export default function Assignments() {
 
     useEffect(() => {
         fetchAssignments();
-    }, []);
+    }, [cid]);
 
     const onCreateAssignmentForCourse = async () => {
         if (!cid) return;
         const newAssignment = {
-            title: assignmentName,
+            title: assignmentName || "New Assignment",
             course: cid,
             description: "New Assignment",
             availableDate: "May 6",
@@ -47,6 +48,7 @@ export default function Assignments() {
         const assignment = await client.createAssignmentForCourse(cid, newAssignment);
         dispatch(setAssignments([...assignments, assignment]));
         setAssignmentName("");
+        router.push(`/Courses/${cid}/Assignments/${assignment._id}`);
     };
 
     const onRemoveAssignment = async (assignmentId: string) => {
@@ -79,13 +81,6 @@ export default function Assignments() {
                             </Button>
                         </div>
                     </div>
-
-                    <input
-                        className="form-control mb-3 w-50"
-                        placeholder="New Assignment Name"
-                        value={assignmentName}
-                        onChange={(e) => setAssignmentName(e.target.value)}
-                    />
                 </>
             )}
 

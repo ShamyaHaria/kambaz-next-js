@@ -30,13 +30,14 @@ export default function Modules() {
 
     useEffect(() => {
         fetchModules();
-    }, []);
+    }, [cid]);
 
-    const onCreateModuleForCourse = async () => {
-        if (!cid) return;
-        const newModule = { name: moduleName, course: cid };
+    const onCreateModuleForCourse = async (lessons: any[] = []) => {
+        if (!cid || !moduleName.trim()) return;
+        const newModule = { name: moduleName, course: cid, lessons: lessons };
         const module = await client.createModuleForCourse(cid, newModule);
         dispatch(setModules([...modules, module]));
+        setModuleName("");
     };
 
     const onRemoveModule = async (moduleId: string) => {
