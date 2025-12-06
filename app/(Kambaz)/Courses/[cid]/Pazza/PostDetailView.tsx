@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare, CheckCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { pazzaAPI } from './client';
+import styles from './postDetail.module.css';
 
 interface Post {
     _id: string;
@@ -37,6 +38,7 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
     const [showFollowUpForm, setShowFollowUpForm] = useState(false);
     const [followUpContent, setFollowUpContent] = useState('');
     const [followUpLoading, setFollowUpLoading] = useState(false);
+    const [showOnlyResolved, setShowOnlyResolved] = useState(false);
 
     const getTimeAgo = (date: string) => {
         try {
@@ -46,13 +48,10 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
         }
     };
 
-    const getRoleBadge = (role: string) => {
-        const badges = {
-            instructor: { bg: '#fef3c7', text: '#92400e', border: '#fde68a' },
-            ta: { bg: '#f3e8ff', text: '#6b21a8', border: '#e9d5ff' },
-            student: { bg: '#f3f4f6', text: '#374151', border: '#d1d5db' },
-        };
-        return badges[role as keyof typeof badges] || badges.student;
+    const getRoleBadgeClass = (role: string) => {
+        if (role === 'instructor') return styles.roleBadgeInstructor;
+        if (role === 'ta') return styles.roleBadgeTA;
+        return styles.roleBadgeStudent;
     };
 
     const handleCopyLink = () => {
@@ -116,158 +115,136 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
         }
     };
 
+    const filteredFollowups = showOnlyResolved
+        ? post.followups.filter(f => f.isAnswer)
+        : post.followups;
+
     return (
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        <div className={styles.postDetailContainer}>
             {/* Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-6 py-4">
-                <div className="flex items-center justify-between mb-3">
-                    <button
-                        onClick={onClose}
-                        className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
-                    >
+            <div className={styles.postHeader}>
+                <div className={styles.headerTop}>
+                    <button onClick={onClose} className={styles.backButton}>
                         <ArrowLeft size={18} />
-                        <span className="font-medium">Back to posts</span>
+                        <span>Back to posts</span>
                     </button>
-                    <div className="flex items-center space-x-2 text-gray-500">
-                        <MessageSquare size={16} />
-                        <span className="text-sm font-medium">{post.views} views</span>
+                    <div className={styles.viewCount}>
+                        <MessageSquare size={18} />
+                        <span>{post.views} views</span>
                     </div>
                 </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2">
+                <div className={styles.tagsContainer}>
                     {post.tags.map((tag, index) => (
-                        <span
-                            key={index}
-                            className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold"
-                        >
+                        <span key={index} className={styles.tag}>
                             {tag}
                         </span>
                     ))}
                 </div>
             </div>
 
-            {/* Content Area */}
-            <div className="px-6 py-6">
-                {/* Title */}
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">
-                    {post.title}
-                </h1>
+            {/* Content */}
+            <div className={styles.postContent}>
+                <h1 className={styles.postTitle}>{post.title}</h1>
 
-                {/* Author Info */}
-                <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-200">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shadow-sm">
+                <div className={styles.authorSection}>
+                    <div className={styles.authorAvatar}>
                         {post.author.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                        <div className="flex items-center space-x-2">
-                            <span className="font-semibold text-gray-900">{post.author.name}</span>
-                            <span
-                                className="text-xs px-2 py-1 rounded-md font-semibold border"
-                                style={{
-                                    backgroundColor: getRoleBadge(post.author.role).bg,
-                                    color: getRoleBadge(post.author.role).text,
-                                    borderColor: getRoleBadge(post.author.role).border,
-                                }}
-                            >
+                    <div className={styles.authorInfo}>
+                        <div className={styles.authorName}>{post.author.name}</div>
+                        <div className={styles.authorMeta}>
+                            <span className={`${styles.roleBadge} ${getRoleBadgeClass(post.author.role)}`}>
                                 {post.author.role === 'instructor' ? 'Instructor' : post.author.role === 'ta' ? 'TA' : 'Student'}
                             </span>
+                            <span className={styles.updateTime}>
+                                Updated {getTimeAgo(post.updatedAt)}
+                            </span>
                         </div>
-                        <p className="text-sm text-gray-500">
-                            Updated {getTimeAgo(post.updatedAt)}
-                        </p>
                     </div>
                 </div>
 
-                {/* Post Content */}
-                <div className="prose max-w-none mb-6">
-                    <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
-                        {post.content}
-                    </p>
-                </div>
+                <div className={styles.postBody}>{post.content}</div>
+            </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center space-x-3 pb-6 border-b border-gray-200">
-                    <button
-                        onClick={handleLike}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${liked
-                            ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                    >
-                        <ThumbsUp size={18} fill={liked ? 'currentColor' : 'none'} />
-                        <span>{post.likes + (liked ? 1 : 0)}</span>
-                    </button>
+            {/* Action Buttons */}
+            <div className={styles.actionButtons}>
+                <button
+                    onClick={handleLike}
+                    className={`${styles.actionButton} ${styles.likeButton} ${liked ? styles.likeButtonActive : ''}`}
+                >
+                    <ThumbsUp size={18} fill={liked ? 'currentColor' : 'none'} />
+                    <span>{post.likes + (liked ? 1 : 0)}</span>
+                </button>
 
-                    <button
-                        onClick={handleBookmark}
-                        className={`p-2.5 rounded-lg transition-all ${bookmarked
-                            ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                        title="Bookmark"
-                    >
-                        <Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} />
-                    </button>
+                <button
+                    onClick={handleBookmark}
+                    className={`${styles.actionButton} ${styles.bookmarkButton} ${bookmarked ? styles.bookmarkButtonActive : ''}`}
+                >
+                    <Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} />
+                </button>
 
-                    <button
-                        onClick={handleStar}
-                        className={`p-2.5 rounded-lg transition-all ${starred
-                            ? 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                        title="Star"
-                    >
-                        <Star size={18} fill={starred ? 'currentColor' : 'none'} />
-                    </button>
+                <button
+                    onClick={handleStar}
+                    className={`${styles.actionButton} ${styles.starButton} ${starred ? styles.starButtonActive : ''}`}
+                >
+                    <Star size={18} fill={starred ? 'currentColor' : 'none'} />
+                </button>
 
-                    <button
-                        onClick={handleCopyLink}
-                        className="p-2.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
-                        title="Copy link"
-                    >
-                        <Link2 size={18} />
-                    </button>
-                </div>
+                <button
+                    onClick={handleCopyLink}
+                    className={`${styles.actionButton} ${styles.shareButton}`}
+                >
+                    <Link2 size={18} />
+                </button>
             </div>
 
             {/* Followups Section */}
-            <div className="px-6 py-6 bg-gray-50">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center space-x-2">
-                        <MessageSquare size={22} className="text-gray-600" />
-                        <span>{post.followups.length} Followup Discussion{post.followups.length !== 1 ? 's' : ''}</span>
-                    </h2>
-                    <button
-                        onClick={() => setShowFollowUpForm(!showFollowUpForm)}
-                        className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm font-medium"
-                    >
-                        {showFollowUpForm ? 'Cancel' : '+ Add Followup'}
-                    </button>
+            <div className={styles.followupsSection}>
+                <div className={styles.followupsHeader}>
+                    <div className={styles.followupsTitle}>
+                        <MessageSquare size={24} className={styles.followupsIcon} />
+                        <span>{filteredFollowups.length} Followup Discussion{filteredFollowups.length !== 1 ? 's' : ''}</span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        {post.followups.some(f => f.isAnswer) && (
+                            <button
+                                onClick={() => setShowOnlyResolved(!showOnlyResolved)}
+                                className={`${styles.resolvedToggle} ${showOnlyResolved ? styles.resolvedToggleActive : ''}`}
+                            >
+                                <CheckCircle size={16} />
+                                <span>Resolved</span>
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setShowFollowUpForm(!showFollowUpForm)}
+                            className={styles.addFollowupButton}
+                        >
+                            {showFollowUpForm ? 'Cancel' : '+ Add Followup'}
+                        </button>
+                    </div>
                 </div>
 
                 {showFollowUpForm && (
-                    <div className="mb-6 bg-white p-4 border-2 border-blue-200 rounded-lg shadow-sm">
+                    <div className={styles.followupForm}>
                         <textarea
                             value={followUpContent}
                             onChange={(e) => setFollowUpContent(e.target.value)}
-                            placeholder="Compose a new followup discussion..."
-                            rows={5}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            placeholder="Share your thoughts, ask a question, or provide an answer..."
+                            className={styles.followupTextarea}
                         />
-                        <div className="mt-3 flex justify-end space-x-3">
+                        <div className={styles.followupFormActions}>
                             <button
-                                type="button"
                                 onClick={() => setShowFollowUpForm(false)}
-                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all font-medium"
+                                className={styles.cancelButton}
                             >
                                 Cancel
                             </button>
                             <button
-                                type="button"
                                 onClick={handlePostFollowUp}
                                 disabled={followUpLoading || !followUpContent.trim()}
-                                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                className={styles.submitButton}
                             >
                                 {followUpLoading ? 'Posting...' : 'Post Followup'}
                             </button>
@@ -275,71 +252,63 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                     </div>
                 )}
 
-                {post.followups.length === 0 ? (
-                    <div className="bg-white rounded-lg p-12 text-center border-2 border-dashed border-gray-300">
-                        <MessageSquare size={48} className="mx-auto text-gray-400 mb-3" />
-                        <p className="text-gray-500 font-medium">No followup discussions yet.</p>
-                        <p className="text-gray-400 text-sm mt-1">Be the first to add one!</p>
+                {filteredFollowups.length === 0 ? (
+                    <div className={styles.emptyFollowups}>
+                        <MessageSquare size={56} className={styles.emptyIcon} />
+                        <div className={styles.emptyTitle}>
+                            {showOnlyResolved ? 'No resolved discussions yet' : 'No followup discussions yet'}
+                        </div>
+                        <div className={styles.emptySubtitle}>
+                            {showOnlyResolved ? 'Switch to view all discussions' : 'Be the first to start the conversation!'}
+                        </div>
                     </div>
                 ) : (
-                    <div className="space-y-4">
-                        {post.followups.map((followup: any) => {
-                            const roleBadge = getRoleBadge(followup.author.role);
-                            return (
-                                <div
-                                    key={followup._id}
-                                    className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow"
-                                >
-                                    {/* Followup Header */}
-                                    <div className="flex items-start space-x-3 mb-3">
-                                        <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm flex-shrink-0">
-                                            {followup.author.name.charAt(0).toUpperCase()}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center space-x-2 mb-1">
-                                                <span className="font-semibold text-gray-900">
-                                                    {followup.author.name}
-                                                </span>
-                                                <span
-                                                    className="text-xs px-2 py-0.5 rounded-md font-semibold border"
-                                                    style={{
-                                                        backgroundColor: roleBadge.bg,
-                                                        color: roleBadge.text,
-                                                        borderColor: roleBadge.border,
-                                                    }}
-                                                >
-                                                    {followup.author.role}
-                                                </span>
-                                                {followup.isAnswer && (
-                                                    <span className="text-xs px-2 py-0.5 rounded-md font-semibold bg-green-100 text-green-700 border border-green-300">
-                                                        ✓ Answer
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-xs text-gray-500">
-                                                {getTimeAgo(followup.createdAt)}
-                                            </p>
-                                        </div>
+                    <div className={styles.followupsList}>
+                        {filteredFollowups.map((followup: any) => (
+                            <div
+                                key={followup._id}
+                                className={`${styles.followupCard} ${followup.isAnswer ? styles.followupCardAnswer : ''}`}
+                            >
+                                <div className={styles.followupHeader}>
+                                    <div className={styles.followupAvatar}>
+                                        {followup.author.name.charAt(0).toUpperCase()}
                                     </div>
-
-                                    {/* Followup Content */}
-                                    <p className="text-gray-800 leading-relaxed mb-3 pl-12">
-                                        {followup.content}
-                                    </p>
-
-                                    {/* Followup Actions */}
-                                    <div className="flex items-center space-x-4 pl-12">
-                                        <button
-                                            onClick={() => handleLikeFollowUp(followup._id)}
-                                            className="flex items-center space-x-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                                        >
-                                            <ThumbsUp size={14} />
-                                            <span className="font-medium">{followup.likes}</span>
-                                        </button>
+                                    <div className={styles.followupAuthorInfo}>
+                                        <div className={styles.followupAuthorTop}>
+                                            <span className={styles.followupAuthorName}>
+                                                {followup.author.name}
+                                            </span>
+                                            <span className={`${styles.roleBadge} ${getRoleBadgeClass(followup.author.role)}`}>
+                                                {followup.author.role}
+                                            </span>
+                                            {followup.isAnswer && (
+                                                <span className={styles.answerBadge}>
+                                                    <CheckCircle size={12} />
+                                                    Answer
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className={styles.followupTime}>
+                                            {getTimeAgo(followup.createdAt)}
+                                        </div>
                                     </div>
                                 </div>
-                            );
-                        })}
+
+                                <div className={styles.followupContent}>
+                                    {followup.content}
+                                </div>
+
+                                <div className={styles.followupActions}>
+                                    <button
+                                        onClick={() => handleLikeFollowUp(followup._id)}
+                                        className={styles.likeFollowupButton}
+                                    >
+                                        <ThumbsUp size={14} />
+                                        <span>{followup.likes}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
