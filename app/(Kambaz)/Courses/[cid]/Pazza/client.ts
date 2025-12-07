@@ -44,12 +44,22 @@ export const pazzaAPI = {
     createFollowUp: (postId: string, data: { content: string; isAnswer?: boolean }) =>
         pazzaClient.post(`/posts/${postId}/followups`, data),
 
+    deleteFollowUp: (postId: string, followupId: string) =>
+        pazzaClient.delete(`/posts/${postId}/followups/${followupId}`),
+
     likeFollowUp: (postId: string, followupId: string) =>
         pazzaClient.post(`/posts/${postId}/followups/${followupId}/like`),
 
     // Stats
     getCourseStats: (courseId: string) =>
         pazzaClient.get(`/courses/${courseId}/stats`),
+
+    // AI
+    generateAIAnswer: (postId: string, data: { title: string; content: string; tags: string[]; category: string }) =>
+        pazzaClient.post(`/posts/${postId}/ai-answer`, data),
+
+    markAsResolved: (postId: string, resolvedByAI: boolean) =>
+        pazzaClient.post(`/posts/${postId}/resolve`, { resolvedByAI }),
 };
 
 export default pazzaClient;

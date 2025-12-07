@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { X } from 'lucide-react';
 import { pazzaAPI } from './client';
 import styles from './pazza.module.css';
 
@@ -12,6 +13,8 @@ interface NewPostModalProps {
 }
 
 export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostModalProps) {
+    const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
+
     const [category, setCategory] = useState('Concept');
     const [postTo, setPostTo] = useState('Entire Class');
     const [selectedFolder, setSelectedFolder] = useState('hw1');
@@ -25,6 +28,10 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
     const categories = ['Concept', 'Clarification', 'Testing', 'Bug', 'Setup', 'Other'];
     const folders = ['hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6', 'hw7', 'labs', 'code_walks', 'logistics', 'other'];
 
+    const userFullName = currentUser
+        ? `${currentUser.firstName} ${currentUser.lastName}`.trim() || currentUser.username
+        : 'User';
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -37,23 +44,27 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
         setError('');
 
         try {
-            await pazzaAPI.createPost(courseId, {
+            const response = await pazzaAPI.createPost(courseId, {
                 title: subject.trim(),
                 content: content.trim(),
                 tags: [selectedFolder],
                 category: category,
             } as any);
 
+            console.log('Post created successfully:', response.data);
+
+            // Close modal and trigger refresh
             onSuccess();
+            onClose();
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Failed to create post');
+            console.error('Error creating post:', err);
+            setError(err.response?.data?.error || err.message || 'Failed to create post');
         } finally {
             setLoading(false);
         }
     };
 
     const handleSaveDraft = () => {
-        // TODO: Implement save draft functionality
         console.log('Save draft');
     };
 
@@ -63,12 +74,12 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                 {/* Header */}
                 <div className={styles.modalHeader}>
                     <div className={styles.modalHeaderLeft}>
-                        <button onClick={onClose} className={styles.backButton}>
+                        <button type="button" onClick={onClose} className={styles.backButton}>
                             ←
                         </button>
                         <h2 className={styles.modalTitle}>New Post</h2>
                     </div>
-                    <button onClick={onClose} className={styles.closeButton}>
+                    <button type="button" onClick={onClose} className={styles.closeButton}>
                         <X size={20} />
                     </button>
                 </div>
@@ -230,11 +241,11 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                             Post as
                         </label>
                         <select
-                            value={showName ? 'Shamya Mitesh Haria' : 'Anonymous'}
-                            onChange={(e) => setShowName(e.target.value === 'Shamya Mitesh Haria')}
+                            value={showName ? userFullName : 'Anonymous'}
+                            onChange={(e) => setShowName(e.target.value === userFullName)}
                             className={styles.selectInput}
                         >
-                            <option value="Shamya Mitesh Haria">Shamya Mitesh Haria</option>
+                            <option value={userFullName}>{userFullName}</option>
                             <option value="Anonymous">Anonymous</option>
                         </select>
                     </div>

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare, CheckCircle, Trash2 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { pazzaAPI } from './client';
 import styles from './postDetail.module.css';
@@ -32,13 +33,41 @@ interface PostDetailViewProps {
 }
 
 export default function PostDetailView({ post, onClose, onUpdate }: PostDetailViewProps) {
+    const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
     const [liked, setLiked] = useState(false);
+    const [likedFollowups, setLikedFollowups] = useState<Set<string>>(new Set());
+    const [currentLikes, setCurrentLikes] = useState(post.likes);
     const [bookmarked, setBookmarked] = useState(post.bookmarked);
     const [starred, setStarred] = useState(post.starred);
     const [showFollowUpForm, setShowFollowUpForm] = useState(false);
     const [followUpContent, setFollowUpContent] = useState('');
     const [followUpLoading, setFollowUpLoading] = useState(false);
     const [showOnlyResolved, setShowOnlyResolved] = useState(false);
+    const [showAIAnswer, setShowAIAnswer] = useState(false);
+    const [aiAnswer, setAiAnswer] = useState('');
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiResolved, setAiResolved] = useState(false);
+
+    // Initialize liked state for post
+    useEffect(() => {
+        const likedBy = (post as any).likedBy || [];
+        const isLiked = currentUser ? likedBy.includes(currentUser._id) : false;
+        setLiked(isLiked);
+        setCurrentLikes(post.likes);
+    }, [post._id, post.likes, currentUser]);
+
+    // Initialize liked followups
+    useEffect(() => {
+        if (currentUser) {
+            const liked = new Set<string>();
+            post.followups.forEach(f => {
+                if (f.likedBy?.includes(currentUser._id)) {
+                    liked.add(f._id);
+                }
+            });
+            setLikedFollowups(liked);
+        }
+    }, [post.followups, currentUser]);
 
     const getTimeAgo = (date: string) => {
         try {
@@ -60,11 +89,20 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
     };
 
     const handleLike = async () => {
+        const newLikedState = !liked;
+        const newLikesCount = newLikedState ? currentLikes + 1 : currentLikes - 1;
+
+        setLiked(newLikedState);
+        setCurrentLikes(newLikesCount);
+
         try {
-            await pazzaAPI.likePost(post._id);
-            setLiked(!liked);
+            const response = await pazzaAPI.likePost(post._id);
+            setLiked(response.data.userHasLiked);
+            setCurrentLikes(response.data.likes);
         } catch (error) {
             console.error('Error liking post:', error);
+            setLiked(!newLikedState);
+            setCurrentLikes(liked ? currentLikes + 1 : currentLikes - 1);
         }
     };
 
@@ -95,29 +133,115 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                 content: followUpContent.trim(),
                 isAnswer: false,
             });
+
             setFollowUpContent('');
             setShowFollowUpForm(false);
+
             if (onUpdate) onUpdate();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error posting followup:', error);
-            alert('Failed to post followup');
+            alert('Failed to post followup: ' + (error.response?.data?.error || error.message));
         } finally {
             setFollowUpLoading(false);
         }
     };
 
-    const handleLikeFollowUp = async (followupId: string) => {
+    const handleDeletePost = async () => {
+        if (!confirm('Are you sure you want to delete this post?')) return;
+
         try {
-            await pazzaAPI.likeFollowUp(post._id, followupId);
+            await pazzaAPI.deletePost(post._id);
+            alert('Post deleted successfully');
+            onClose();
             if (onUpdate) onUpdate();
         } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Failed to delete post');
+        }
+    };
+
+    const handleDeleteFollowUp = async (followupId: string) => {
+        if (!confirm('Are you sure you want to delete this followup?')) return;
+
+        try {
+            await pazzaAPI.deleteFollowUp(post._id, followupId);
+            if (onUpdate) onUpdate();
+        } catch (error) {
+            console.error('Error deleting followup:', error);
+            alert('Failed to delete followup');
+        }
+    };
+
+    const canDeletePost = () => {
+        if (!currentUser) return false;
+        const isAuthor = post.author._id === currentUser._id;
+        const isFacultyOrAdmin = currentUser.role === 'FACULTY' || currentUser.role === 'ADMIN';
+        return isAuthor || isFacultyOrAdmin;
+    };
+
+    const canDeleteFollowup = (followup: any) => {
+        if (!currentUser) return false;
+        const isAuthor = followup.author._id === currentUser._id;
+        const isFacultyOrAdmin = currentUser.role === 'FACULTY' || currentUser.role === 'ADMIN';
+        return isAuthor || isFacultyOrAdmin;
+    };
+
+    const handleLikeFollowUp = async (followupId: string) => {
+        // Optimistic update
+        const newLikedFollowups = new Set(likedFollowups);
+        if (newLikedFollowups.has(followupId)) {
+            newLikedFollowups.delete(followupId);
+        } else {
+            newLikedFollowups.add(followupId);
+        }
+        setLikedFollowups(newLikedFollowups);
+
+        try {
+            await pazzaAPI.likeFollowUp(post._id, followupId);
+            
+            // Refresh to get accurate counts
+            if (onUpdate) {
+                await onUpdate();
+            }
+        } catch (error) {
             console.error('Error liking followup:', error);
+            // Revert on error
+            setLikedFollowups(likedFollowups);
         }
     };
 
     const filteredFollowups = showOnlyResolved
         ? post.followups.filter(f => f.isAnswer)
         : post.followups;
+
+    const handleGenerateAIAnswer = async () => {
+        setAiLoading(true);
+        setShowAIAnswer(true);
+        try {
+            const response = await pazzaAPI.generateAIAnswer(post._id, {
+                title: post.title,
+                content: post.content,
+                tags: post.tags,
+                category: (post as any).category || 'Other'
+            });
+            setAiAnswer(response.data.answer);
+        } catch (error) {
+            console.error('Error generating AI answer:', error);
+            setAiAnswer('Failed to generate AI answer. Please try again.');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    const handleMarkResolved = async () => {
+        try {
+            await pazzaAPI.markAsResolved(post._id, true);
+            setAiResolved(true);
+            alert('Post marked as resolved! Faculty will be notified.');
+        } catch (error) {
+            console.error('Error marking as resolved:', error);
+        }
+    };
 
     return (
         <div className={styles.postDetailContainer}>
@@ -128,9 +252,20 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                         <ArrowLeft size={18} />
                         <span>Back to posts</span>
                     </button>
-                    <div className={styles.viewCount}>
-                        <MessageSquare size={18} />
-                        <span>{post.views} views</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className={styles.viewCount}>
+                            <MessageSquare size={18} />
+                            <span>{post.views} views</span>
+                        </div>
+                        {canDeletePost() && (
+                            <button
+                                onClick={handleDeletePost}
+                                className={styles.deletePostButton}
+                                title="Delete post"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -174,7 +309,7 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                     className={`${styles.actionButton} ${styles.likeButton} ${liked ? styles.likeButtonActive : ''}`}
                 >
                     <ThumbsUp size={18} fill={liked ? 'currentColor' : 'none'} />
-                    <span>{post.likes + (liked ? 1 : 0)}</span>
+                    <span>{currentLikes}</span>
                 </button>
 
                 <button
@@ -199,6 +334,78 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                 </button>
             </div>
 
+            {/* AI Answer Section */}
+            {!showAIAnswer && post.followups.length === 0 && (
+                <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-t border-gray-200">
+                    <button
+                        onClick={handleGenerateAIAnswer}
+                        className={styles.aiAnswerButton}
+                    >
+                        <span>✨</span>
+                        <span>Get AI-Powered Answer</span>
+                    </button>
+                </div>
+            )}
+
+            {showAIAnswer && (
+                <div className="px-6 py-6 bg-gradient-to-br from-purple-50 to-blue-50 border-t-2 border-purple-200">
+                    <div className="bg-white rounded-lg border-2 border-purple-300 p-5 shadow-md">
+                        <div className="flex items-start gap-3 mb-4">
+                            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                                🤖
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-bold text-gray-900">AI Assistant</span>
+                                    <span className="text-xs px-2 py-1 rounded-md font-semibold bg-purple-100 text-purple-700 border border-purple-300">
+                                        Powered by AI
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-500">Generated just now</p>
+                            </div>
+                        </div>
+
+                        {aiLoading ? (
+                            <div className="flex items-center justify-center py-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                                <span className="ml-3 text-gray-600">Generating answer...</span>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="prose max-w-none mb-4">
+                                    <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                        {aiAnswer}
+                                    </p>
+                                </div>
+
+                                {!aiResolved && (
+                                    <div className="flex items-center justify-between pt-4 border-t border-purple-200">
+                                        <p className="text-sm text-gray-600 italic">
+                                            💡 Was this answer helpful? Mark as resolved to notify faculty.
+                                        </p>
+                                        <button
+                                            onClick={handleMarkResolved}
+                                            className={styles.markResolvedButton}
+                                        >
+                                            ✓ Mark as Resolved
+                                        </button>
+                                    </div>
+                                )}
+
+                                {aiResolved && (
+                                    <div className="flex items-center gap-2 pt-4 border-t border-green-200 bg-green-50 px-4 py-3 rounded-lg">
+                                        <CheckCircle size={20} className="text-green-600" />
+                                        <span className="text-green-700 font-semibold">
+                                            Marked as resolved - Faculty notified!
+                                        </span>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Followups Section */}
             <div className={styles.followupsSection}>
                 <div className={styles.followupsHeader}>
@@ -214,7 +421,7 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                 className={`${styles.resolvedToggle} ${showOnlyResolved ? styles.resolvedToggleActive : ''}`}
                             >
                                 <CheckCircle size={16} />
-                                <span>Resolved</span>
+                                <span>Resolved only</span>
                             </button>
                         )}
                         <button
@@ -301,11 +508,20 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                 <div className={styles.followupActions}>
                                     <button
                                         onClick={() => handleLikeFollowUp(followup._id)}
-                                        className={styles.likeFollowupButton}
+                                        className={`${styles.likeFollowupButton} ${likedFollowups.has(followup._id) ? styles.likeFollowupButtonActive : ''}`}
                                     >
-                                        <ThumbsUp size={14} />
+                                        <ThumbsUp size={14} fill={likedFollowups.has(followup._id) ? 'currentColor' : 'none'} />
                                         <span>{followup.likes}</span>
                                     </button>
+                                    {canDeleteFollowup(followup) && (
+                                        <button
+                                            onClick={() => handleDeleteFollowUp(followup._id)}
+                                            className={styles.deleteFollowupButton}
+                                            title="Delete followup"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}

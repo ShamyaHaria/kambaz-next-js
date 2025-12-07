@@ -141,7 +141,15 @@ export default function PazzaPage() {
                                 <PostDetailView
                                     post={currentPost}
                                     onClose={() => dispatch(setCurrentPost(null))}
-                                    onUpdate={fetchPosts}
+                                    onUpdate={async () => {
+                                        await fetchPosts();
+                                        try {
+                                            const response = await pazzaAPI.getPost(currentPost._id);
+                                            dispatch(setCurrentPost(response.data));
+                                        } catch (error) {
+                                            console.error('Error refreshing post:', error);
+                                        }
+                                    }}
                                 />
                             ) : (
                                 <ClassAtGlance stats={stats} />
