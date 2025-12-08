@@ -70,6 +70,12 @@ export const pazzaAPI = {
 
     markAsResolved: (postId: string, resolvedByAI: boolean) =>
         pazzaClient.post(`/posts/${postId}/resolve`, { resolvedByAI }),
+
+    updateFollowUp: (postId: string, followupId: string, data: { content: string }) =>
+        pazzaClient.put(`/posts/${postId}/followups/${followupId}`, data),
+
+    updateReply: (postId: string, followupId: string, replyId: string, data: { content: string }) =>
+        pazzaClient.put(`/posts/${postId}/followups/${followupId}/replies/${replyId}`, data),
 };
 
 export default pazzaClient;

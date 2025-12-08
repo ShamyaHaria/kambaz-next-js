@@ -910,3 +910,137 @@
     gap: 8px;
     justify-content: flex-end;
 }
+
+/* Nested Replies Styles */
+.nestedReplies {
+    margin-top: 16px;
+    padding-left: 52px;
+    border-left: 3px solid #e5e7eb;
+}
+
+.repliesList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.replyCard {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s;
+}
+
+.replyCard:hover {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.replyHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.replyAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #6366f1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.replyAuthorInfo {
+    flex: 1;
+}
+
+.replyAuthorTop {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.replyAuthorName {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.replyTime {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.replyContent {
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    padding-left: 42px;
+}
+
+.replyActions {
+    display: flex;
+    gap: 6px;
+    padding-left: 42px;
+}
+
+.replyButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f9fafb;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.replyButton:hover {
+    background: #f3f4f6;
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.replyForm {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.replyTextarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+
+.replyTextarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.replyFormActions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}

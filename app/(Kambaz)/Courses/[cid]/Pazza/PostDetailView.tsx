@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { pazzaAPI } from './client';
 import styles from './postDetail.module.css';
+import NestedReplies from './NestedReplies';
+import EditContentModal from './EditContentModal';
 
 interface Post {
     _id: string;
@@ -65,6 +67,7 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
     const [aiAnswer, setAiAnswer] = useState('');
     const [aiLoading, setAiLoading] = useState(false);
     const [aiResolved, setAiResolved] = useState(false);
+    const [editingItem, setEditingItem] = useState<{type: 'post' | 'answer' | 'discussion' | 'reply', id: string, content: string, followupId?: string} | null>(null);
 
     useEffect(() => {
         const likedBy = (post as any).likedBy || [];
@@ -773,6 +776,15 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                             <span>{discussion.likes || 0}</span>
                                         </button>
                                     </div>
+
+                                    <NestedReplies
+                                        postId={post._id}
+                                        followupId={discussion._id}
+                                        replies={discussion.replies || []}
+                                        currentUser={currentUser}
+                                        likedReplies={likedFollowups}
+                                        onUpdate={onUpdate || (() => { })}
+                                    />
                                 </div>
                             ))}
                         </div>
