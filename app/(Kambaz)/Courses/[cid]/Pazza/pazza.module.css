@@ -1651,3 +1651,38 @@
     border-top: 2px solid #e5e7eb;
     background: #f9fafb;
 }
+
+.editButton {
+    padding: 6px 12px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 8px;
+}
+
+.editButton:hover {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.postCardSelected {
+    background: #eff6ff !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Fixed height containers with independent scrolling */
+.postsList {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.postDetailContainer {
+    max-height: 85vh;
+    overflow-y: auto;
+}

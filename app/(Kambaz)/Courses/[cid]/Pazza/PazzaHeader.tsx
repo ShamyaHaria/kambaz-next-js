@@ -10,8 +10,8 @@ interface PazzaHeaderProps {
     onNewPost: () => void;
     onShowSetup: () => void;
     onLogout: () => void;
-    activePage?: 'Q&A' | 'Resources' | 'Statistics';
-    onPageChange?: (page: 'Q&A' | 'Resources' | 'Statistics') => void;
+    activePage?: 'Q&A' | 'Resources' | 'Statistics' | 'ManageClass';
+    onPageChange?: (page: 'Q&A' | 'Resources' | 'Statistics' | 'ManageClass') => void;
     onTagClick?: (tag: string) => void;
 }
 
@@ -173,6 +173,16 @@ export default function PazzaHeader({ courseId, onNewPost, onShowSetup, onLogout
                     >
                         Q & A
                     </button>
+
+                    {(currentUser?.role === 'FACULTY' || currentUser?.role === 'ADMIN' || currentUser?.role === 'TA') && (
+                        <button
+                            onClick={() => onPageChange?.('ManageClass')}
+                            className={`${styles.navLink} ${activePage === 'ManageClass' ? styles.navLinkActive : ''}`}
+                        >
+                            Manage Class
+                        </button>
+                    )}
+
                     <button
                         onClick={() => onPageChange?.('Resources')}
                         className={`${styles.navLink} ${activePage === 'Resources' ? styles.navLinkActive : ''}`}

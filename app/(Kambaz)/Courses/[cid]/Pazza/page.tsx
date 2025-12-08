@@ -14,18 +14,18 @@ import PostDetailView from './PostDetailView';
 import PiazzaSetupView from './PiazzaSetupView';
 import ResourcesView from './ResourcesView';
 import StatisticsView from './StatisticsView';
+import ManageFolders from './ManageFolders';
 
 export default function PazzaPage() {
     const params = useParams();
     const courseId = params.cid as string;
     const dispatch = useDispatch();
-
     const { posts, stats, selectedTags, currentPost, loading } = useSelector((state: any) => state.pazzaReducer);
     const [showNewPostModal, setShowNewPostModal] = useState(false);
     const [showPinnedOnly, setShowPinnedOnly] = useState(false);
     const [showSetup, setShowSetup] = useState(false);
-    const [activePage, setActivePage] = useState<'Q&A' | 'Resources' | 'Statistics'>('Q&A');
-    const [showSidebar, setShowSidebar] = useState(true); 
+    const [activePage, setActivePage] = useState<'Q&A' | 'Resources' | 'Statistics' | 'ManageClass'>('Q&A');
+    const [showSidebar, setShowSidebar] = useState(true);
 
     useEffect(() => {
         if (activePage === 'Q&A') {
@@ -117,23 +117,23 @@ export default function PazzaPage() {
                 onLogout={() => setShowSetup(true)}
                 activePage={activePage}
                 onPageChange={setActivePage}
-                onTagClick={handleTagClick} 
+                onTagClick={handleTagClick}
             />
 
-            {}
+            { }
             {activePage === 'Q&A' && (
                 <div className="max-w-full px-6 py-6">
-                    <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: showSidebar ? '350px 1fr' : '1fr', 
-                        gap: '1.5rem', 
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: showSidebar ? '350px 1fr' : '1fr',
+                        gap: '1.5rem',
                         maxWidth: '100%',
                         transition: 'grid-template-columns 0.3s ease'
                     }}>
-                        {}
+                        { }
                         {showSidebar && (
                             <div className="bg-white rounded-lg shadow-md border border-gray-200" style={{ position: 'relative' }}>
-                                {}
+                                { }
                                 <button
                                     onClick={() => setShowSidebar(false)}
                                     style={{
@@ -179,9 +179,9 @@ export default function PazzaPage() {
                             </div>
                         )}
 
-                        {}
+                        { }
                         <div style={{ position: 'relative' }}>
-                            {}
+                            { }
                             {!showSidebar && (
                                 <button
                                     onClick={() => setShowSidebar(true)}
@@ -238,14 +238,19 @@ export default function PazzaPage() {
                 </div>
             )}
 
-            {}
+            { }
             {activePage === 'Resources' && (
                 <ResourcesView courseId={courseId} />
             )}
 
-            {}
+            { }
             {activePage === 'Statistics' && (
                 <StatisticsView courseId={courseId} />
+            )}
+
+            {/* Manage Class View - ONLY FOR INSTRUCTORS */}
+            {activePage === 'ManageClass' && (
+                <ManageFolders courseId={courseId} />
             )}
 
             {showNewPostModal && (

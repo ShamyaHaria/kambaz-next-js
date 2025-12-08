@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare, CheckCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, Bookmark, Star, Link2, MessageSquare, CheckCircle, Trash2, Edit } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { pazzaAPI } from './client';
@@ -19,6 +19,7 @@ interface Post {
         role: 'student' | 'instructor' | 'ta';
     };
     tags: string[];
+    isPinned?: boolean;
     views: number;
     likes: number;
     bookmarked: boolean;
@@ -67,7 +68,7 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
     const [aiAnswer, setAiAnswer] = useState('');
     const [aiLoading, setAiLoading] = useState(false);
     const [aiResolved, setAiResolved] = useState(false);
-    const [editingItem, setEditingItem] = useState<{type: 'post' | 'answer' | 'discussion' | 'reply', id: string, content: string, followupId?: string} | null>(null);
+    const [editingItem, setEditingItem] = useState<{ type: 'post' | 'answer' | 'discussion' | 'reply', id: string, content: string, followupId?: string } | null>(null);
 
     useEffect(() => {
         const likedBy = (post as any).likedBy || [];
@@ -317,13 +318,38 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                             <span>{post.views} views</span>
                         </div>
                         {canDeletePost() && (
-                            <button
-                                onClick={handleDeletePost}
-                                className={styles.deletePostButton}
-                                title="Delete post"
-                            >
-                                <Trash2 size={18} />
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            await pazzaAPI.togglePin(post._id);
+                                            if (onUpdate) onUpdate();
+                                        } catch (error) {
+                                            console.error('Error toggling pin:', error);
+                                        }
+                                    }}
+                                    className={`${styles.pinButton} ${post.isPinned ? styles.pinButtonPinned : styles.pinButtonUnpinned}`}
+                                >
+                                    📌 {post.isPinned ? 'Unpin' : 'Pin'}
+                                </button>
+                                <button
+                                    onClick={() => setEditingItem({
+                                        type: 'post',
+                                        id: post._id,
+                                        content: post.content
+                                    })}
+                                    className={styles.editPostButton}
+                                >
+                                    <Edit size={16} />
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={handleDeletePost}
+                                    className={styles.deletePostButton}
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -541,13 +567,39 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                             </div>
                                         </div>
                                         {canDeleteFollowup(answer) && (
-                                            <button
-                                                onClick={() => handleDeleteFollowUp(answer._id)}
-                                                className={styles.deleteButton}
-                                                title="Delete answer"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={() => setEditingItem({
+                                                        type: 'answer',
+                                                        id: answer._id,
+                                                        content: answer.content
+                                                    })}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        background: '#eff6ff',
+                                                        color: '#2563eb',
+                                                        border: '1px solid #bfdbfe',
+                                                        borderRadius: '6px',
+                                                        fontSize: '13px',
+                                                        fontWeight: '600',
+                                                        cursor: 'pointer',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
+                                                    }}
+                                                    title="Edit answer"
+                                                >
+                                                    <Edit size={14} />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteFollowUp(answer._id)}
+                                                    className={styles.deleteButton}
+                                                    title="Delete answer"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
 
@@ -648,13 +700,39 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                             </div>
                                         </div>
                                         {canDeleteFollowup(answer) && (
-                                            <button
-                                                onClick={() => handleDeleteFollowUp(answer._id)}
-                                                className={styles.deleteButton}
-                                                title="Delete answer"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={() => setEditingItem({
+                                                        type: 'answer',
+                                                        id: answer._id,
+                                                        content: answer.content
+                                                    })}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        background: '#eff6ff',
+                                                        color: '#2563eb',
+                                                        border: '1px solid #bfdbfe',
+                                                        borderRadius: '6px',
+                                                        fontSize: '13px',
+                                                        fontWeight: '600',
+                                                        cursor: 'pointer',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
+                                                    }}
+                                                    title="Edit answer"
+                                                >
+                                                    <Edit size={14} />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteFollowUp(answer._id)}
+                                                    className={styles.deleteButton}
+                                                    title="Delete answer"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
 
@@ -753,13 +831,39 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                             </div>
                                         </div>
                                         {canDeleteFollowup(discussion) && (
-                                            <button
-                                                onClick={() => handleDeleteFollowUp(discussion._id)}
-                                                className={styles.deleteButton}
-                                                title="Delete discussion"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={() => setEditingItem({
+                                                        type: 'discussion',
+                                                        id: discussion._id,
+                                                        content: discussion.content
+                                                    })}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        background: '#eff6ff',
+                                                        color: '#2563eb',
+                                                        border: '1px solid #bfdbfe',
+                                                        borderRadius: '6px',
+                                                        fontSize: '13px',
+                                                        fontWeight: '600',
+                                                        cursor: 'pointer',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
+                                                    }}
+                                                    title="Edit discussion"
+                                                >
+                                                    <Edit size={14} />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteFollowUp(discussion._id)}
+                                                    className={styles.deleteButton}
+                                                    title="Delete discussion"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
 
@@ -768,6 +872,21 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                                     </div>
 
                                     <div className={styles.discussionActions}>
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    await pazzaAPI.toggleResolveDiscussion(post._id, discussion._id);
+                                                    if (onUpdate) onUpdate();
+                                                } catch (error) {
+                                                    console.error('Error toggling resolve:', error);
+                                                }
+                                            }}
+                                            className={`${styles.resolvedButton} ${discussion.isResolved ? styles.resolvedButtonResolved : styles.resolvedButtonUnresolved}`}
+                                        >
+                                            <CheckCircle size={14} />
+                                            {discussion.isResolved ? 'Resolved' : 'Unresolved'}
+                                        </button>
+
                                         <button
                                             onClick={() => handleLikeFollowUp(discussion._id)}
                                             className={`${styles.likeButton} ${likedFollowups.has(discussion._id) ? styles.likeButtonActive : ''}`}
@@ -791,6 +910,23 @@ export default function PostDetailView({ post, onClose, onUpdate }: PostDetailVi
                     )}
                 </div>
             </div>
+
+            {editingItem && (
+                <EditContentModal
+                    content={editingItem.content}
+                    title={`Edit ${editingItem.type}`}
+                    onSave={async (newContent) => {
+                        if (editingItem.type === 'post') {
+                            await pazzaAPI.updatePost(post._id, { content: newContent });
+                        } else {
+                            await pazzaAPI.updateFollowUp(post._id, editingItem.id, { content: newContent });
+                        }
+                        if (onUpdate) onUpdate();
+                        setEditingItem(null);
+                    }}
+                    onClose={() => setEditingItem(null)}
+                />
+            )}
         </div>
     );
 }

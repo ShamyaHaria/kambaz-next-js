@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import PostCard from './PostCard';
 import styles from './pazza.module.css';
@@ -108,6 +108,14 @@ export default function PostsList({
     };
 
     const groupedPosts = groupPostsByDate(posts);
+    useEffect(() => {
+        setExpandedSections({
+            pinned: groupedPosts.pinned.length > 0,
+            today: groupedPosts.today.length > 0,
+            yesterday: groupedPosts.yesterday.length > 0,
+            lastWeek: groupedPosts.lastWeek.length > 0,
+        });
+    }, [posts]);
 
     if (loading) {
         return (

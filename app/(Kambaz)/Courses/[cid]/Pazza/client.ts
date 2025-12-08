@@ -76,6 +76,9 @@ export const pazzaAPI = {
 
     updateReply: (postId: string, followupId: string, replyId: string, data: { content: string }) =>
         pazzaClient.put(`/posts/${postId}/followups/${followupId}/replies/${replyId}`, data),
+
+    toggleResolveDiscussion: (postId: string, followupId: string) =>
+        pazzaClient.patch(`/posts/${postId}/followups/${followupId}/resolve`),
 };
 
 export default pazzaClient;

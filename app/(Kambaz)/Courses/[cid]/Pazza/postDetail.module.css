@@ -1044,3 +1044,91 @@
     gap: 6px;
     justify-content: flex-end;
 }
+
+.resolvedButton {
+    padding: 6px 12px;
+    border-radius: 6px;
+    fontSize: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    border: 1px solid #d1d5db;
+}
+
+.resolvedButtonUnresolved {
+    background: #f3f4f6;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.resolvedButtonUnresolved:hover {
+    background: #e5e7eb;
+}
+
+.resolvedButtonResolved {
+    background: #10b981;
+    color: white;
+    border-color: #059669;
+}
+
+.resolvedButtonResolved:hover {
+    background: #059669;
+}
+
+.pinButton {
+    padding: 8px 16px;
+    border: 1px solid;
+    border-radius: 6px;
+    fontSize: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.pinButtonUnpinned {
+    background: #fff;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.pinButtonUnpinned:hover {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fbbf24;
+}
+
+.pinButtonPinned {
+    background: #fbbf24;
+    color: #78350f;
+    border-color: #f59e0b;
+}
+
+.pinButtonPinned:hover {
+    background: #f59e0b;
+}
+
+.editPostButton {
+    padding: 8px 16px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.editPostButton:hover {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}

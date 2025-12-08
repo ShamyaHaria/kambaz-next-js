@@ -22,10 +22,15 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
     const [selectedFolder, setSelectedFolder] = useState('hw1');
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [editorType, setEditorType] = useState('Rich text editor'); // Changed default to Rich text
+    const [editorType, setEditorType] = useState('Rich text editor');
     const [showName, setShowName] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [errors, setErrors] = useState({
+        subject: '',
+        content: '',
+        folder: ''
+    });
 
     const categories = ['Concept', 'Clarification', 'Testing', 'Bug', 'Setup', 'Other'];
     const folders = ['hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6', 'hw7', 'labs', 'code_walks', 'logistics', 'other'];
@@ -37,8 +42,27 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!subject.trim() || !content.trim()) {
-            setError('Subject and content are required');
+        const newErrors = {
+            subject: '',
+            content: '',
+            folder: ''
+        };
+
+        if (!subject.trim()) {
+            newErrors.subject = 'Subject is required';
+        }
+
+        if (!content.trim()) {
+            newErrors.content = 'Content is required';
+        }
+
+        if (!selectedFolder) {
+            newErrors.folder = 'Please select at least one folder';
+        }
+
+        setErrors(newErrors);
+
+        if (newErrors.subject || newErrors.content || newErrors.folder) {
             return;
         }
 
@@ -52,6 +76,7 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                 tags: [selectedFolder],
                 category: category,
                 type: postType,
+                visibility: postTo === 'Entire Class' ? 'entire_class' : 'instructors_only',
             } as any);
 
             console.log('Post created successfully:', response.data);
@@ -215,6 +240,11 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                                 </button>
                             ))}
                         </div>
+                        {errors.folder && (
+                            <div style={{ color: '#dc2626', fontSize: '13px', marginTop: '4px' }}>
+                                {errors.folder}
+                            </div>
+                        )}
                     </div>
 
                     {/* Subject */}
@@ -231,6 +261,11 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                             className={styles.textInput}
                             required
                         />
+                        {errors.subject && (
+                            <div style={{ color: '#dc2626', fontSize: '13px', marginTop: '4px' }}>
+                                {errors.subject}
+                            </div>
+                        )}
                     </div>
 
                     {/* Content Editor Selection - Keep all options, Rich Text as default */}
@@ -273,6 +308,11 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                                 <span>Markdown editor</span>
                             </label>
                         </div>
+                        {errors.content && (
+                            <div style={{ color: '#dc2626', fontSize: '13px', marginTop: '4px' }}>
+                                {errors.content}
+                            </div>
+                        )}
                     </div>
 
                     {/* Conditional Editor Rendering */}
