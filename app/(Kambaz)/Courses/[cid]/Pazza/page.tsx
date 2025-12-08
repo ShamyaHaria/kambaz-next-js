@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { setPosts, setStats, setSelectedTags, setCurrentPost, setLoading } from './pazzaSlice';
 import { pazzaAPI } from './client';
 import PazzaHeader from './PazzaHeader';
@@ -24,6 +25,7 @@ export default function PazzaPage() {
     const [showPinnedOnly, setShowPinnedOnly] = useState(false);
     const [showSetup, setShowSetup] = useState(false);
     const [activePage, setActivePage] = useState<'Q&A' | 'Resources' | 'Statistics'>('Q&A');
+    const [showSidebar, setShowSidebar] = useState(true); 
 
     useEffect(() => {
         if (activePage === 'Q&A') {
@@ -98,7 +100,6 @@ export default function PazzaPage() {
         }
     };
 
-    // If showing setup view
     if (showSetup) {
         return (
             <div className="min-h-screen bg-gray-50">
@@ -119,24 +120,102 @@ export default function PazzaPage() {
                 onTagClick={handleTagClick} 
             />
 
-            {/* Q&A View */}
+            {}
             {activePage === 'Q&A' && (
                 <div className="max-w-full px-6 py-6">
-                    <div style={{ display: 'grid', gridTemplateColumns: '350px 1fr', gap: '1.5rem', maxWidth: '100%' }}>
-                        <div className="bg-white rounded-lg shadow-md border border-gray-200">
-                            <PostsList
-                                posts={filteredPosts}
-                                loading={loading}
-                                showPinnedOnly={showPinnedOnly}
-                                onTogglePinned={() => setShowPinnedOnly(!showPinnedOnly)}
-                                selectedTags={selectedTags}
-                                onTagSelect={handleTagSelect}
-                                onPostSelect={handlePostSelect}
-                                selectedPostId={currentPost?._id}
-                            />
-                        </div>
+                    <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: showSidebar ? '350px 1fr' : '1fr', 
+                        gap: '1.5rem', 
+                        maxWidth: '100%',
+                        transition: 'grid-template-columns 0.3s ease'
+                    }}>
+                        {}
+                        {showSidebar && (
+                            <div className="bg-white rounded-lg shadow-md border border-gray-200" style={{ position: 'relative' }}>
+                                {}
+                                <button
+                                    onClick={() => setShowSidebar(false)}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '12px',
+                                        right: '-12px',
+                                        zIndex: 10,
+                                        background: 'white',
+                                        border: '1px solid #d1d5db',
+                                        borderRadius: '50%',
+                                        width: '28px',
+                                        height: '28px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                                        transition: 'all 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = '#f3f4f6';
+                                        e.currentTarget.style.transform = 'scale(1.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'white';
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                    }}
+                                    title="Hide sidebar"
+                                >
+                                    <ChevronLeft size={18} color="#374151" />
+                                </button>
 
-                        <div>
+                                <PostsList
+                                    posts={filteredPosts}
+                                    loading={loading}
+                                    showPinnedOnly={showPinnedOnly}
+                                    onTogglePinned={() => setShowPinnedOnly(!showPinnedOnly)}
+                                    selectedTags={selectedTags}
+                                    onTagSelect={handleTagSelect}
+                                    onPostSelect={handlePostSelect}
+                                    selectedPostId={currentPost?._id}
+                                />
+                            </div>
+                        )}
+
+                        {}
+                        <div style={{ position: 'relative' }}>
+                            {}
+                            {!showSidebar && (
+                                <button
+                                    onClick={() => setShowSidebar(true)}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '12px',
+                                        left: '-12px',
+                                        zIndex: 10,
+                                        background: 'white',
+                                        border: '1px solid #d1d5db',
+                                        borderRadius: '50%',
+                                        width: '32px',
+                                        height: '32px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                        transition: 'all 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = '#f3f4f6';
+                                        e.currentTarget.style.transform = 'scale(1.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'white';
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                    }}
+                                    title="Show sidebar"
+                                >
+                                    <ChevronRight size={20} color="#374151" />
+                                </button>
+                            )}
+
                             {currentPost ? (
                                 <PostDetailView
                                     post={currentPost}
@@ -159,12 +238,12 @@ export default function PazzaPage() {
                 </div>
             )}
 
-            {/* Resources View */}
+            {}
             {activePage === 'Resources' && (
                 <ResourcesView courseId={courseId} />
             )}
 
-            {/* Statistics View */}
+            {}
             {activePage === 'Statistics' && (
                 <StatisticsView courseId={courseId} />
             )}

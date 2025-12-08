@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { X } from 'lucide-react';
 import { pazzaAPI } from './client';
+import RichTextEditor from './RichTextEditor';
 import styles from './pazza.module.css';
 
 interface NewPostModalProps {
@@ -15,12 +16,13 @@ interface NewPostModalProps {
 export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostModalProps) {
     const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
 
+    const [postType, setPostType] = useState<'Question' | 'Note' | 'Poll'>('Question');
     const [category, setCategory] = useState('Concept');
     const [postTo, setPostTo] = useState('Entire Class');
     const [selectedFolder, setSelectedFolder] = useState('hw1');
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
-    const [editorType, setEditorType] = useState('Plain text editor');
+    const [editorType, setEditorType] = useState('Rich text editor'); // Changed default to Rich text
     const [showName, setShowName] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -49,11 +51,10 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                 content: content.trim(),
                 tags: [selectedFolder],
                 category: category,
+                type: postType,
             } as any);
 
             console.log('Post created successfully:', response.data);
-
-            // Close modal and trigger refresh
             onSuccess();
             onClose();
         } catch (err: any) {
@@ -90,6 +91,62 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                             {error}
                         </div>
                     )}
+
+                    {/* Post Type Tabs - REQUIRED BY RUBRIC */}
+                    <div className={styles.formGroup}>
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', borderBottom: '2px solid #e5e7eb' }}>
+                            <button
+                                type="button"
+                                onClick={() => setPostType('Question')}
+                                style={{
+                                    padding: '12px 24px',
+                                    border: 'none',
+                                    background: 'transparent',
+                                    borderBottom: postType === 'Question' ? '3px solid #2563eb' : '3px solid transparent',
+                                    color: postType === 'Question' ? '#2563eb' : '#6b7280',
+                                    fontWeight: postType === 'Question' ? '600' : '400',
+                                    cursor: 'pointer',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                Question
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPostType('Note')}
+                                style={{
+                                    padding: '12px 24px',
+                                    border: 'none',
+                                    background: 'transparent',
+                                    borderBottom: postType === 'Note' ? '3px solid #2563eb' : '3px solid transparent',
+                                    color: postType === 'Note' ? '#2563eb' : '#6b7280',
+                                    fontWeight: postType === 'Note' ? '600' : '400',
+                                    cursor: 'pointer',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                Note
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPostType('Poll')}
+                                disabled
+                                style={{
+                                    padding: '12px 24px',
+                                    border: 'none',
+                                    background: 'transparent',
+                                    borderBottom: postType === 'Poll' ? '3px solid #2563eb' : '3px solid transparent',
+                                    color: '#9ca3af',
+                                    fontWeight: '400',
+                                    cursor: 'not-allowed',
+                                    fontSize: '16px',
+                                    opacity: 0.5
+                                }}
+                            >
+                                Poll (Coming Soon)
+                            </button>
+                        </div>
+                    </div>
 
                     {/* Category Selection */}
                     <div className={styles.formGroup}>
@@ -176,7 +233,7 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                         />
                     </div>
 
-                    {/* Content Editor Selection */}
+                    {/* Content Editor Selection - Keep all options, Rich Text as default */}
                     <div className={styles.formGroup}>
                         <label className={styles.formLabel}>
                             What do you need help with?<span className={styles.required}>*</span>
@@ -218,20 +275,41 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                         </div>
                     </div>
 
-                    {/* Content Textarea */}
+                    {/* Conditional Editor Rendering */}
                     <div className={styles.formGroup}>
-                        <textarea
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            placeholder="Enter your question or message here..."
-                            rows={10}
-                            className={styles.textArea}
-                            required
-                        />
+                        {editorType === 'Rich text editor' && (
+                            <RichTextEditor
+                                content={content}
+                                onChange={setContent}
+                                placeholder="Enter your question or message here..."
+                            />
+                        )}
+
+                        {editorType === 'Plain text editor' && (
+                            <textarea
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                placeholder="Enter your question or message here..."
+                                rows={10}
+                                className={styles.textArea}
+                                required
+                            />
+                        )}
+
                         {editorType === 'Markdown editor' && (
-                            <p className={styles.helperText}>
-                                Use &lt;md&gt;markdown block&lt;/md&gt; for markdown. Use $$latex formula$$ for LaTeX.
-                            </p>
+                            <>
+                                <textarea
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="Enter your question or message here..."
+                                    rows={10}
+                                    className={styles.textArea}
+                                    required
+                                />
+                                <p className={styles.helperText}>
+                                    Use &lt;md&gt;markdown block&lt;/md&gt; for markdown. Use $$latex formula$$ for LaTeX.
+                                </p>
+                            </>
                         )}
                     </div>
 
@@ -259,7 +337,7 @@ export default function NewPostModal({ courseId, onClose, onSuccess }: NewPostMo
                             disabled={loading}
                             className={styles.submitButton}
                         >
-                            {loading ? 'Posting...' : `Post My Question to ${courseId}!`}
+                            {loading ? 'Posting...' : `Post My ${postType} to ${courseId}!`}
                         </button>
                         <button
                             type="button"

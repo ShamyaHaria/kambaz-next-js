@@ -50,6 +50,16 @@ export const pazzaAPI = {
     likeFollowUp: (postId: string, followupId: string) =>
         pazzaClient.post(`/posts/${postId}/followups/${followupId}/like`),
 
+    // Replies (NESTED REPLIES - ADD THESE THREE)
+    createReply: (postId: string, followupId: string, data: { content: string }) =>
+        pazzaClient.post(`/posts/${postId}/followups/${followupId}/replies`, data),
+
+    deleteReply: (postId: string, followupId: string, replyId: string) =>
+        pazzaClient.delete(`/posts/${postId}/followups/${followupId}/replies/${replyId}`),
+
+    likeReply: (postId: string, followupId: string, replyId: string) =>
+        pazzaClient.post(`/posts/${postId}/followups/${followupId}/replies/${replyId}/like`),
+
     // Stats
     getCourseStats: (courseId: string) =>
         pazzaClient.get(`/courses/${courseId}/stats`),
