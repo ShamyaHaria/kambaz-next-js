@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { updateAssignment } from "../reducer";
 import * as client from "../../../client";
 
+
 export default function AssignmentEditor() {
     const params = useParams();
     const cid = Array.isArray(params.cid) ? params.cid[0] : params.cid;
