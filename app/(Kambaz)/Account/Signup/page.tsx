@@ -53,6 +53,7 @@ export default function Signup() {
             <Button onClick={signup} className="w-100 mb-2">
                 Sign up
             </Button>
+            <Link href="/Account/Signin">Sign in</Link>
         </div>
     );
 }
